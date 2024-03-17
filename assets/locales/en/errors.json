@@ -1,0 +1,14 @@
+{
+  "required": "{name} is required",
+  "email": "{name} has an invalid email format",
+  "maxByteLength": "Please enter {name} within {maxByteLength} characters.",
+  "minByteLength": "Please enter {name} with at least {minByteLength} half-width characters.",
+  "real": "Please enter {name} as a real number.",
+  "regex": "Please enter {name} as a regular expression {regex} pattern",
+  "rangefield": "Please enter {valuename} less than or equal to the value entered in {maxname}",
+  "integer": "Please enter {name} as an integer value.",
+  "tel": "{name} is an invalid phone number format",
+  "passwordconfirm": {
+    "notequal": "The value entered for {name} and the value entered for {confirmproperty} are different"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "home": {
+    "searchPlaceHolder": "Search for the storybook you want",
+    "login": "Login",
+    "goodStory": "Good story",
+    "updateStory": "Newly updated story",
+    "home": "Home",
+    "category": "Category",
+    "rating": "Ratings",
+    "history": "History",
+    "follow": "Follow",
+    "storyCard": {
+      "newUpdate": "new update",
+      "dayAgo": "day ago"
+    }
+  },
+  "login": {
+    "login": "Login",
+    "register": "Register",
+    "forgotPassword": "Forgot Password",
+    "cancel": "Cancel",
+    "fieldName": {
+      "email": "Email",
+      "password": "Password"
+    }
+  },
+  "register": {
+    "register": "Register",
+    "login": "Login",
+    "forgotPassword": "Forgot Password",
+    "cancel": "Cancel",
+    "fieldName": {
+      "email": "Email",
+      "password": "Password",
+      "passwordConfirm": "Password Confirm"
+    }
+  },
+  "mangaDetail": {
+    "anotherName": "Another name",
+    "author": "Author",
+    "status": "Status",
+    "likes": "Likes",
+    "flow": "Follow",
+    "view": "View",
+    "readBeginning": "read beginning",
+    "introduce": "Introduce",
+    "chapterList": "Chapter list",
+    "comment": "Comment",
+    "chapter": "Chapter",
+    "dateSubmitted": "Date Submitted"
+  }
+}

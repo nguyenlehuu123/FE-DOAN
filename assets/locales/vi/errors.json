@@ -1,0 +1,14 @@
+{
+  "required": "{name} là bắt buộc",
+  "email": "{name} có định dạng không hợp lệ",
+  "maxByteLength": "Vui lòng nhập {name} trong tối đa {maxByteLength} ký tự.",
+  "minByteLength": "Vui lòng nhập {name} với ít nhất {minByteLength} ký tự.",
+  "real": "Vui lòng nhập {name} là một số thực.",
+  "regex": "Vui lòng nhập {name} dưới dạng một mẫu biểu thức chính quy {regex}",
+  "rangefield": "Vui lòng nhập {valuename} nhỏ hơn hoặc bằng giá trị được nhập trong {maxname}",
+  "integer": "Vui lòng nhập {name} dưới dạng một số nguyên.",
+  "tel": "{name} có định dạng số điện thoại không hợp lệ",
+  "passwordconfirm": {
+    "notequal": "Giá trị được nhập cho {name} và giá trị được nhập cho {confirmproperty} không giống nhau"
+  }
+}

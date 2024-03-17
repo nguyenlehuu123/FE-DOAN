@@ -1,0 +1,52 @@
+{
+  "home": {
+    "searchPlaceHolder": "Tìm kiếm cuốn chuyện bạn muốn",
+    "login": "Đăng nhập",
+    "goodStory": "Truyện hay",
+    "updateStory": "Truyện mới cập nhật",
+    "home": "Trang chủ",
+    "category": "Thể loại",
+    "rating": "Đánh giá",
+    "history": "Lịch sử",
+    "follow": "Theo dõi",
+    "storyCard": {
+      "newUpdate": "Mới cập nhật",
+      "dayAgo": "ngày trước"
+    }
+  },
+  "login": {
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "forgotPassword": "Quên mật khẩu",
+    "cancel": "Hủy",
+    "fieldName": {
+      "email": "Email",
+      "password": "Mật khẩu"
+    }
+  },
+  "register": {
+    "register": "Đăng ký",
+    "login": "Đăng nhập",
+    "forgotPassword": "Quên mật khẩu",
+    "cancel": "Hủy",
+    "fieldName": {
+      "email": "Email",
+      "password": "Mật khẩu",
+      "passwordConfirm": "Nhập lại mật khẩu"
+    }
+  },
+  "mangaDetail": {
+    "anotherName": "Tên khác",
+    "author": "Tác giả",
+    "status": "Trạng thái",
+    "likes": "Lượt thích",
+    "flow": "Theo dõi",
+    "view": "Lượt xem",
+    "readBeginning": "Đọc từ đầu",
+    "introduce": "Gới thiệu",
+    "chapterList": "Danh sách chương",
+    "comment": "Bình luận",
+    "chapter": "Chương",
+    "dateSubmitted": "Ngày đăng"
+  }
+}

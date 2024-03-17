@@ -1,0 +1,11 @@
+$v-text-field-default-padding-left: 10px;
+$v-text-field-default-padding-right: 16px;
+$v-text-field-comfortable-padding-left: 10px;
+$v-text-field-comfortable-padding-right: 14px;
+
+:export{
+  vTextFieldDefaultPaddingLeft: $v-text-field-default-padding-left;
+  vTextFieldDefaultPaddingRight: $v-text-field-default-padding-right;
+  vTextFieldComfortablePaddingLeft: $v-text-field-comfortable-padding-left;
+  vTextFieldComfortablePaddingRight: $v-text-field-comfortable-padding-right;
+}
