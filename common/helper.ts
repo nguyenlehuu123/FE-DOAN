@@ -42,7 +42,20 @@ const DateHelper = {
   },
   numberDayAge: (beforeDate: Date): number => {
     const today = new Date();
-    return differenceInDays(today, beforeDate);
+    return differenceInDays(beforeDate, today);
+  },
+  formatDateMMDDYYYY: (isoDateString: string) => {
+    const date = new Date(isoDateString);
+
+    // Lấy thông tin ngày, tháng và năm từ đối tượng Date
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Tháng bắt đầu từ 0 nên cần cộng thêm 1
+    const year = date.getFullYear();
+
+    // Tạo chuỗi ngày/tháng/năm
+    const formattedDate = `${day}/${month}/${year}`;
+
+    return formattedDate;
   }
 }
 

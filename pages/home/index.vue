@@ -14,7 +14,7 @@ interface IStory {
   likeNumber: number;
   status: number;
   storyName: string;
-  story_id: number;
+  storyId: number;
   updateTimestamp: string;
   updater: string;
   versionNo: number;
@@ -107,13 +107,13 @@ watch(page, () => {
             v-for="(slide, index) in slideGroupItem"
             :key="index"
             v-slot="{ isSelected, toggle, selectedClass }"
-            class="mx-6"
           >
             <nguyen-category
               :src="slide.image"
               :title="slide.storyName"
               :posting-time="handleDateAge(slide.updateTimestamp) == 0 ? $t('page.home.storyCard.newUpdate') : handleDateAge(slide.updateTimestamp).toString() + $t('page.home.storyCard.dayAgo')"
               :status="slide.status"
+              :story-id="slide.storyId"
               chapter="99"
               class="ma-4"
             >
@@ -136,6 +136,7 @@ watch(page, () => {
           :posting-time="handleDateAge(storyNew.updateTimestamp) == 0 ? $t('page.home.storyCard.newUpdate') : handleDateAge(storyNew.updateTimestamp).toString() + $t('page.home.storyCard.dayAgo')"
           :status="storyNew.status"
           :key="index"
+          :story-id="storyNew.storyId"
         >
         </nguyen-category>
       </div>

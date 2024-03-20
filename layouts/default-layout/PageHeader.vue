@@ -182,6 +182,7 @@ const handleToggleLanguage = (i: number) => {
     >
       <v-tab
         v-for="(optionHeader, index) in optionHeaderField"
+        :key="index"
         :value="index"
         :to="optionHeader.link"
       >

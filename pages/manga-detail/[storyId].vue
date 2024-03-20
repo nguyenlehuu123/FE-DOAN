@@ -3,8 +3,55 @@ import NguyenDataTable from "~/components/ui/NguyenDataTable.vue";
 import NguyenTextFieldComment from "~/components/ui/NguyenTextFieldComment.vue";
 import NguyenComment from "~/components/ui/NguyenComment.vue";
 import { useI18n } from "vue-i18n";
+import mangaDetailRepository from "~/repositories/master/mangaDetailRepository";
+import { DateHelper } from "~/common/helper";
 
-const i18n = useI18n()
+interface IStory {
+  createTimestamp: string;
+  creator: string;
+  deleteFlg: number;
+  description: string;
+  followNumber: number;
+  image: string;
+  likeNumber: number;
+  status: number;
+  storyName: string;
+  storyId: number;
+  updateTimestamp: string;
+  updater: string;
+  versionNo: number;
+  authorEntities: IAuthor[],
+  chapterEntities: IChapterData[]
+}
+
+interface IAuthor {
+  authorId: number;
+  name: string;
+  pseudonym: string;
+  email: string;
+  address: string;
+  phone: string;
+}
+
+interface IChapterData {
+  creator: string;
+  createTimestamp: string;
+  updater: string;
+  updateTimestamp: string;
+  versionNo: number;
+  deleteFlg: number;
+  chapterId: number;
+  viewNumber: number;
+  statusKey: number;
+}
+
+interface Items {
+  chapterId: string,
+  statusKey: number,
+  viewNumber: number,
+  updateTimestamp: string
+}
+
 const breadcrumbs = [
   {
     title: 'Trang chủ',
@@ -18,9 +65,10 @@ const breadcrumbs = [
   }
 ]
 
+const i18n = useI18n()
 const headersFixed = [
   {
-    key: 'chapter',
+    key: 'chapterId',
     title: i18n.t('page.mangaDetail.chapter'),
     align: 'start',
     sortable: true,
@@ -28,7 +76,7 @@ const headersFixed = [
     fixed: true
   },
   {
-    key: 'status',
+    key: 'statusKey',
     title: i18n.t('page.mangaDetail.status'),
     align: 'start',
     sortable: false,
@@ -36,7 +84,7 @@ const headersFixed = [
     fixed: true
   },
   {
-    key: 'view',
+    key: 'viewNumber',
     title: i18n.t('page.mangaDetail.view'),
     align: 'start',
     sortable: true,
@@ -44,7 +92,7 @@ const headersFixed = [
     fixed: true
   },
   {
-    key: 'dateSubmitted',
+    key: 'updateTimestamp',
     title: i18n.t('page.mangaDetail.dateSubmitted'),
     align: 'start',
     sortable: true,
@@ -52,129 +100,36 @@ const headersFixed = [
     fixed: true
   },
 ]
-const items = [
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '20/10/2022',
-  }
-]
 
+const { storyId } = useRoute().params
+const detailManga = ref<IStory>()
+const chapterData = ref<IChapterData[] | null>(null)
+const items = ref<Items[] | undefined>()
+onMounted(() => {
+  Promise.all([mangaDetailRepository.getMangaDetail(storyId)])
+    .then((response) => {
+      detailManga.value = response[0] as IStory
+      chapterData.value = detailManga.value.chapterEntities as IChapterData[]
+    })
+})
+
+watch(chapterData, () => {
+  if (chapterData.value) {
+    items.value = chapterData.value.map((cha: IChapterData) => {
+      return {
+        chapterId: "Chapter " + cha.chapterId.toString(),
+        statusKey: cha.statusKey,
+        viewNumber: cha.viewNumber,
+        updateTimestamp: DateHelper.formatDateMMDDYYYY(cha.updateTimestamp)
+      }
+    })
+  }
+})
+
+
+function handleListNameAuthor(authors: IAuthor[]) {
+  return authors?.map((author) => author.pseudonym).join(', ')
+}
 </script>
 
 <template>
@@ -191,41 +146,37 @@ const items = [
           height="250"
           cover
           loding
-          src="https://i.truyenvua.com/ebook/190x247/truc-phong-nguyet-du-quan-hi_1529549781.jpg?gt=hdfgdfg&mobile=2"></v-img>
+          :src="detailManga && detailManga.image">
+        </v-img>
       </div>
       <div style="margin-left: 50px">
-        <h2>Trục Phong Nguyệt, Dư Quân Hỉ</h2>
-        <div class="d-flex align-center mt-3">
-          <v-icon icon="mdi-plus-thick" style="font-size: 20px; margin-right: 4px"></v-icon>
-          <p style="width: 140px">{{ $t('page.mangaDetail.anotherName') }}</p>
-          <p>Nữ Đương Gia Sương Dã Trại</p>
-        </div>
-        <div class="d-flex align-center mt-3">
+        <h2>{{ detailManga && detailManga.storyName }}</h2>
+        <div class="d-flex align-center mt-4">
           <v-icon icon="mdi-account-star" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.author') }}</p>
-          <p>Vân Đoan Mạn Họa</p>
+          <p>{{ detailManga && handleListNameAuthor(detailManga.authorEntities) }}</p>
         </div>
-        <div class="d-flex align-center mt-3">
+        <div class="d-flex align-center mt-4">
           <v-icon icon="mdi-wifi" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.status') }}</p>
           <p>Đang Cập Nhật</p>
         </div>
-        <div class="d-flex align-center mt-3">
+        <div class="d-flex align-center mt-4">
           <v-icon icon="mdi-thumb-up" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.likes') }}</p>
-          <p>507</p>
+          <p>{{ detailManga && detailManga.likeNumber }}</p>
         </div>
-        <div class="d-flex align-center mt-3">
+        <div class="d-flex align-center mt-4">
           <v-icon icon="mdi-heart" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.flow') }}</p>
-          <p>1,838</p>
+          <p>{{ detailManga && detailManga.followNumber }}</p>
         </div>
-        <div class="d-flex align-center mt-3">
+        <div class="d-flex align-center mt-4">
           <v-icon icon="mdi-eye-arrow-left" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.view') }}</p>
-          <p>267,526</p>
+          <p>34539354</p>
         </div>
-        <div class="d-flex ga-6 mt-2">
+        <div class="d-flex ga-6 mt-10">
           <v-btn class="bg-green-lighten-1" prepend-icon="mdi-notebook">
             {{ $t('page.mangaDetail.readBeginning') }}
           </v-btn>
@@ -240,28 +191,24 @@ const items = [
         <h2>{{ $t('page.mangaDetail.introduce') }}</h2>
       </div>
       <div>
-        Đại Tống kiến triều đệ thập bát năm, Phượng Hoàng Sơn “Sương dã trại” nữ đương gia liêu vô song, không chịu nổi
-        bà vú cả ngày lải nhải, quyết định tìm một người nam nhân, sinh hài tử! Đúng lúc vào lúc này, Đại Tống quốc chủ
-        bất kham địa phương rung chuyển, đặc phái đương triều khác họ Vương gia cố khuynh thành, lên núi diệt phỉ. Trời
-        quang trăng sáng cố khuynh thành, một thế hệ mỹ nam, lại là xuất sư tiệp thân chết trước, coi khinh nữ nhân hậu
-        quả, chính là bị cái này đang lo vô pháp sinh bảo tiểu nữ tử, trói lại sơn, áp lên giường đất.
+        {{ detailManga && detailManga.description }}
       </div>
     </div>
-    <div class="mt-8">
+    <div class="mt-8" v-if="items">
       <nguyen-data-table
         :headers="headersFixed"
         :items="items"
         :height="400"
       >
-        <template #item.view="{ item }">
+        <template #item.viewNumber="{ item }">
           <div>
             <v-icon icon="mdi-eye-check-outline"></v-icon>
-            <span class="mx-2">{{ item?.view }}</span>
+            <span class="mx-2">{{ item?.viewNumber }}</span>
           </div>
         </template>
-        <template #item.status="{ item }">
+        <template #item.statusKey="{ item }">
           <div>
-            <v-icon v-if="item?.status === 0" icon="mdi-lock-alert-outline"></v-icon>
+            <v-icon v-if="item?.statusKey === 0" icon="mdi-lock-alert-outline"></v-icon>
             <v-icon v-else icon="mdi-lock-open-outline"></v-icon>
           </div>
         </template>
