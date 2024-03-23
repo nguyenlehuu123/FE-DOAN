@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { DateHelper } from "~/common/helper";
+import { useI18n } from "vue-i18n";
+
 const slots = useSlots()
 definePageMeta({
   layout: false
@@ -8,7 +11,7 @@ interface Props {
   src: string,
   title: string,
   chapter: string | number,
-  postingTime: string,
+  postingTime: string | Date,
   status: number | string,
   storyId: number | string
 }
@@ -23,7 +26,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const fickerStatus = ref<boolean>(false)
-
+const i18n = useI18n()
+const timeUpdate = ref()
 const textStatus = computed(() => {
   if (props.status === 0) {
     return null;
@@ -48,6 +52,10 @@ onUnmounted(() => {
   clearInterval(clearInte)
 })
 
+onMounted(() => {
+  timeUpdate.value = DateHelper.numberDayAgo(new Date(props.postingTime)) == 0 ? i18n.t('page.home.storyCard.newUpdate') : DateHelper.numberDayAgo(new Date(props.postingTime)).toString() + " " + i18n.t('page.home.storyCard.dayAgo')
+})
+
 </script>
 
 <template>
@@ -63,7 +71,7 @@ onUnmounted(() => {
       >
         <div class="d-flex mt-2 ml-2 ga-1">
           <div style="color: aliceblue; background-color: #0071C1; font-size: 12px" class="px-1 rounded-sm">
-            <span>{{ postingTime }}</span>
+            <span>{{ timeUpdate }}</span>
           </div>
           <div v-if="status !== 0 && fickerStatus" style="color: aliceblue; font-size: 12px" class="px-1 rounded-sm"
                :class="`${(props.status) === 1 ? 'bg-red-darken-3' : 'bg-lime-accent-3'}`">

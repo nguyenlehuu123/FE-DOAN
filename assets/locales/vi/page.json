@@ -29,10 +29,12 @@
     "login": "Đăng nhập",
     "forgotPassword": "Quên mật khẩu",
     "cancel": "Hủy",
+    "sendOTP": "gửi OTP",
     "fieldName": {
       "email": "Email",
       "password": "Mật khẩu",
-      "passwordConfirm": "Nhập lại mật khẩu"
+      "passwordConfirm": "Nhập lại mật khẩu",
+      "emailVerification": "Xác minh email"
     }
   },
   "mangaDetail": {
@@ -47,6 +49,7 @@
     "chapterList": "Danh sách chương",
     "comment": "Bình luận",
     "chapter": "Chương",
-    "dateSubmitted": "Ngày đăng"
+    "dateSubmitted": "Ngày đăng",
+    "unfollow": "Hủy theo dõi"
   }
 }

@@ -1,5 +1,10 @@
 import { defineStore } from "pinia";
 
+interface IUserInfo {
+  avatar?: string,
+  email?: string
+}
+
 export const userStore = defineStore('useStore', {
   state: () => {
     return {
@@ -12,7 +17,7 @@ export const userStore = defineStore('useStore', {
     getUserRole(): string {
       return this.useRole
     },
-    getUserInfo(): string | object {
+    getUserInfo(): IUserInfo {
       return this.userInfo
     },
     getAuthorization(): string {
@@ -23,7 +28,7 @@ export const userStore = defineStore('useStore', {
     updateUserRole(role: string) {
       this.useRole = role
     },
-    updateUserInfo(userInfo: string | object) {
+    updateUserInfo(userInfo: IUserInfo) {
       this.userInfo = userInfo
     },
     updateAuthorization(authorization: string) {

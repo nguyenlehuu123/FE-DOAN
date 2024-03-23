@@ -40,7 +40,7 @@ const DateHelper = {
     }
     return 1;
   },
-  numberDayAge: (beforeDate: Date): number => {
+  numberDayAgo: (beforeDate: Date): number => {
     const today = new Date();
     return differenceInDays(beforeDate, today);
   },

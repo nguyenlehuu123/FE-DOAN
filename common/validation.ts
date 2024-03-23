@@ -9,7 +9,7 @@ const validation = {
   }),
   lengthMin: (value: any, minLength: number = 1, fieldName: string) => (!value || ('' + value).length >= minLength) || i18n.global.t('errors.minByteLength', {
     name: fieldName,
-    maxByteLength: minLength
+    minByteLength: minLength
   }),
   isRealNumber: (value: any, fieldName: string) => (!isNaN(parseFloat(value)) && isFinite(value)) || i18n.global.t('errors.real', { name: fieldName }),
   isValidWidthRegex: (value: any, regex: RegExp, fieldName: string) => regex.test(value) || i18n.global.t('errors.regex', {

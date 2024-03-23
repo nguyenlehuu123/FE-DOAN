@@ -5,6 +5,9 @@ import NguyenComment from "~/components/ui/NguyenComment.vue";
 import { useI18n } from "vue-i18n";
 import mangaDetailRepository from "~/repositories/master/mangaDetailRepository";
 import { DateHelper } from "~/common/helper";
+import followRepository from "~/repositories/master/followRepository";
+import { userStore } from "~/stores/useStore";
+import { dialogHttpStore } from "~/stores/dialogHttpStore";
 
 interface IStory {
   createTimestamp: string;
@@ -105,12 +108,26 @@ const { storyId } = useRoute().params
 const detailManga = ref<IStory>()
 const chapterData = ref<IChapterData[] | null>(null)
 const items = ref<Items[] | undefined>()
+const storyFollowed = ref<IStory[] | null>(null)
+const isFollow = ref<boolean>(false)
+const userStoreLocal = userStore()
+const dialogHttpStoreLocal = dialogHttpStore()
+
 onMounted(() => {
-  Promise.all([mangaDetailRepository.getMangaDetail(storyId)])
+  Promise.all([
+    mangaDetailRepository.getMangaDetail(storyId)
+  ])
     .then((response) => {
       detailManga.value = response[0] as IStory
       chapterData.value = detailManga.value.chapterEntities as IChapterData[]
     })
+    .catch((error) => {
+    })
+
+  userStoreLocal.getAuthorization ? followRepository.getStoryFollowed()
+    .then((response) => {
+      storyFollowed.value = response as IStory[]
+    }) : ''
 })
 
 watch(chapterData, () => {
@@ -126,9 +143,39 @@ watch(chapterData, () => {
   }
 })
 
+watch(storyFollowed, () => {
+  if (storyFollowed.value) {
+    isFollow.value = storyFollowed.value.some((storyItem) => storyItem.storyId.toString() === storyId as string)
+  }
+})
 
 function handleListNameAuthor(authors: IAuthor[]) {
   return authors?.map((author) => author.pseudonym).join(', ')
+}
+
+function handleFollowStory() {
+  if (userStoreLocal.getAuthorization) {
+    followRepository.followStory({ storyId: storyId as string }, {})
+      .then((response) => {
+        isFollow.value = true
+        // TODO
+      })
+      .catch((error) => {
+        // TODO
+      })
+  } else {
+    dialogHttpStoreLocal.setContent("You need to login to perform this function")
+    dialogHttpStoreLocal.setShow(true)
+  }
+}
+
+function handleUnfollowStory() {
+  followRepository.unfollowStory({ storyId: storyId as string }, {})
+    .then(response => {
+      isFollow.value = false
+    })
+    .catch(error => {
+    })
 }
 </script>
 
@@ -180,7 +227,12 @@ function handleListNameAuthor(authors: IAuthor[]) {
           <v-btn class="bg-green-lighten-1" prepend-icon="mdi-notebook">
             {{ $t('page.mangaDetail.readBeginning') }}
           </v-btn>
-          <v-btn class="bg-red-accent-2" prepend-icon="mdi-heart">{{ $t('page.mangaDetail.flow') }}</v-btn>
+          <v-btn v-if="!isFollow" class="bg-red-accent-2" prepend-icon="mdi-heart" @click="handleFollowStory()">
+            {{ $t('page.mangaDetail.flow') }}
+          </v-btn>
+          <v-btn v-if="isFollow" class="bg-red-accent-2" prepend-icon="mdi-close" @click="handleUnfollowStory()">
+            {{ $t('page.mangaDetail.unfollow') }}
+          </v-btn>
           <v-btn class="bg-light-blue-accent-3" prepend-icon="mdi-thumb-up">{{ $t('page.mangaDetail.likes') }}</v-btn>
         </div>
       </div>

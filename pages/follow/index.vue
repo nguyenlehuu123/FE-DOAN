@@ -1,13 +1,67 @@
 <script setup lang="ts">
 import NguyenCategory from "~/components/ui/NguyenCategory.vue";
+import followRepository from "~/repositories/master/followRepository";
+import { DateHelper } from "~/common/helper";
+
+
+interface IStory {
+  createTimestamp: string;
+  creator: string;
+  deleteFlg: number;
+  description: string;
+  followNumber: number;
+  image: string;
+  likeNumber: number;
+  status: number;
+  storyName: string;
+  storyId: number;
+  updateTimestamp: string;
+  updater: string;
+  versionNo: number;
+  authorEntities: IAuthor[],
+  chapterEntities: IChapterData[]
+}
+
+interface IAuthor {
+  authorId: number;
+  name: string;
+  pseudonym: string;
+  email: string;
+  address: string;
+  phone: string;
+}
+
+interface IChapterData {
+  creator: string;
+  createTimestamp: string;
+  updater: string;
+  updateTimestamp: string;
+  versionNo: number;
+  deleteFlg: number;
+  chapterId: number;
+  viewNumber: number;
+  statusKey: number;
+}
+
+const storyFollow = ref<IStory[] | null>(null)
+
+onMounted(() => {
+  followRepository.getStoryFollowed()
+    .then((response) => {
+      storyFollow.value = response as IStory[]
+    })
+})
 </script>
 <template>
-  <div>
+  <div class="d-flex ga-6 mt-8">
     <nguyen-category
-      src="https://autopro8.mediacdn.vn/2018/12/27/aventador-lamborghini-liberty-vn-2-1545885685345311699204.jpg"
-      title="Ôm khẩn tiểu mã giáp ..."
-      posting-time="5 ngày trước"
-      :status="2"
+      v-for="(storyItem, index) in storyFollow"
+      :key="index"
+      :src="storyItem.image"
+      :title="storyItem.storyName"
+      :posting-time="storyItem.updateTimestamp"
+      :status="storyItem.status"
+      :story-id="storyItem.storyId"
       chapter="99"
     >
     </nguyen-category>

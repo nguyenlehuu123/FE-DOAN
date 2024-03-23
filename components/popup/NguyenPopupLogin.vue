@@ -51,6 +51,11 @@ const login = async () => {
   loginRepository.login(loginPayload, loginLangCodes).then((loginResponse: any) => {
     console.log(loginResponse)
     userStoreLocal.updateAuthorization('Bearer ' + loginResponse.accessToken)
+    userStoreLocal.updateUserRole(loginResponse.role)
+    userStoreLocal.updateUserInfo({
+      email: loginResponse.email,
+      avatar: loginResponse.avatar
+    })
     handleShowDialogLogin()
   })
     .catch((error) => {
@@ -112,11 +117,11 @@ const login = async () => {
         </div>
       </v-form>
       <v-card-subtitle style="margin-left: 16px">
-        <nguyen-hyper-link to="/register" @click="handleShowDialogRegister">
+        <nguyen-hyper-link to="/" @click="handleShowDialogRegister">
           {{ $t('page.login.register') }}
         </nguyen-hyper-link>
         |
-        <nguyen-hyper-link to="/change-password">{{ $t('page.login.forgotPassword') }}</nguyen-hyper-link>
+        <nguyen-hyper-link to="/">{{ $t('page.login.forgotPassword') }}</nguyen-hyper-link>
       </v-card-subtitle>
       <v-card-actions style="margin-left: 280px">
         <v-btn

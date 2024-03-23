@@ -50,10 +50,6 @@ onMounted(() => {
     })
 })
 
-const handleDateAge = (date: Date) => {
-  return DateHelper.numberDayAge(date)
-}
-
 watch(page, () => {
   pagingRequest.pageNum = page.value
   homeRepository.getStoryNewUpdate(pagingRequest, {})
@@ -66,7 +62,7 @@ watch(page, () => {
 
 </script>
 <template>
-  <div style="max-width: 1500px; margin: auto; margin-top: -60px;">
+  <div>
     <v-carousel
       show-arrows="hover"
       :interval="3000"
@@ -111,7 +107,7 @@ watch(page, () => {
             <nguyen-category
               :src="slide.image"
               :title="slide.storyName"
-              :posting-time="handleDateAge(slide.updateTimestamp) == 0 ? $t('page.home.storyCard.newUpdate') : handleDateAge(slide.updateTimestamp).toString() + $t('page.home.storyCard.dayAgo')"
+              :posting-time="slide.updateTimestamp"
               :status="slide.status"
               :story-id="slide.storyId"
               chapter="99"
@@ -133,7 +129,7 @@ watch(page, () => {
           chapter="99"
           :src="storyNew.image"
           :title="storyNew.storyName"
-          :posting-time="handleDateAge(storyNew.updateTimestamp) == 0 ? $t('page.home.storyCard.newUpdate') : handleDateAge(storyNew.updateTimestamp).toString() + $t('page.home.storyCard.dayAgo')"
+          :posting-time="storyNew.updateTimestamp"
           :status="storyNew.status"
           :key="index"
           :story-id="storyNew.storyId"

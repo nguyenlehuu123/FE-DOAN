@@ -43,7 +43,7 @@ const confirmRollback = function () {
       <v-card-title class="text-red text-center text-h4">
         {{ title }}
       </v-card-title>
-      <v-card-text class="text-center align-center text-body-1 my-4">
+      <v-card-text class="text-center align-center text-body-1 my-1">
         {{ content }}
       </v-card-text>
       <v-card-actions>

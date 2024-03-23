@@ -29,10 +29,12 @@
     "login": "Login",
     "forgotPassword": "Forgot Password",
     "cancel": "Cancel",
+    "sendOTP": "send OTP",
     "fieldName": {
       "email": "Email",
       "password": "Password",
-      "passwordConfirm": "Password Confirm"
+      "passwordConfirm": "Password Confirm",
+      "emailVerification": "Email verification"
     }
   },
   "mangaDetail": {
@@ -47,6 +49,7 @@
     "chapterList": "Chapter list",
     "comment": "Comment",
     "chapter": "Chapter",
-    "dateSubmitted": "Date Submitted"
+    "dateSubmitted": "Date Submitted",
+    "unfollow": "Unfollow"
   }
 }

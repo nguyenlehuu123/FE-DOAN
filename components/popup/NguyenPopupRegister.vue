@@ -12,6 +12,7 @@ const email = ref<string>('')
 const password = ref<string>('')
 const passwordConfirm = ref<string>('')
 const form = ref(null)
+const otp = ref<number | string | null>(null)
 
 </script>
 
@@ -76,6 +77,21 @@ const form = ref(null)
             :type="toggleEyePasswordConfirm ? 'text' : 'password'"
             @click:append-inner="toggleEyePasswordConfirm = !toggleEyePasswordConfirm"
           ></nguyen-text-field>
+        </div>
+        <div class="mx-auto d-flex align-center">
+          <nguyen-text-field
+            v-model="otp"
+            :label="$t('page.register.fieldName.emailVerification')"
+            density="compact"
+            text-field-width="120"
+            style="border-radius: 8px;"
+            :rules="[
+            (value) => validation.required(value, $t('page.register.fieldName.emailVerification')),
+            (value) => validation.lengthMin(value, 6, $t('page.register.fieldName.emailVerification')),
+            (value) => validation.lengthMax(value, 6, $t('page.register.fieldName.emailVerification'))
+          ]"
+          ></nguyen-text-field>
+          <v-btn class="mt-2 ml-2" color="#4CAF50">{{ $t('page.register.sendOTP') }}</v-btn>
         </div>
       </v-form>
       <v-card-subtitle style="margin-left: 16px">
