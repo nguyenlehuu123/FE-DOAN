@@ -15,7 +15,6 @@ const toggleEye = ref<boolean>(false)
 const email = ref<string>('')
 const password = ref<string>('')
 const form = ref(null)
-const valid = ref<boolean>(false)
 const i18n = useI18n()
 
 interface ILoginResponse {
@@ -49,7 +48,6 @@ const login = async () => {
     405: i18n.t('message.000002', [i18n.t('page.login.fieldName.password')])
   }
   loginRepository.login(loginPayload, loginLangCodes).then((loginResponse: any) => {
-    console.log(loginResponse)
     userStoreLocal.updateAuthorization('Bearer ' + loginResponse.accessToken)
     userStoreLocal.updateUserRole(loginResponse.role)
     userStoreLocal.updateUserInfo({

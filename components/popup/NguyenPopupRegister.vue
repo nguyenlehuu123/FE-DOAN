@@ -4,6 +4,10 @@ import NguyenTextField from "~/components/ui/NguyenTextField.vue";
 import validation from "~/common/validation";
 import NguyenHyperLink from "~/components/ui/NguyenHyperLink.vue";
 import { showDialogStore } from "~/stores/showDialogStore";
+import { userStore } from "~/stores/useStore";
+import sendEmailRepository from "~/repositories/master/sendEmailRepository";
+import loginRepository from "~/repositories/master/loginRepository";
+import { useI18n } from "vue-i18n";
 
 const showDialog = showDialogStore()
 const toggleEyePassword = ref<boolean>(false)
@@ -12,7 +16,45 @@ const email = ref<string>('')
 const password = ref<string>('')
 const passwordConfirm = ref<string>('')
 const form = ref(null)
+const valid = ref<boolean>(false)
 const otp = ref<number | string | null>(null)
+const i18n = useI18n();
+const userStoreLocal = userStore()
+
+const handleSendOtp = () => {
+  sendEmailRepository.sendOtpToEmail({ email: email.value }, {})
+    .then((response) => {
+    })
+}
+
+const handleRegister = async () => {
+  const { valid } = await form.value.validate()
+  if (!valid) {
+    return
+  }
+  const langCodes = {
+    400: i18n.t('message.000004'),
+    401: i18n.t('message.000007'),
+    402: i18n.t('message.000006', ['OTP']),
+    404: i18n.t('message.000005', ['OTP'])
+  }
+  loginRepository.register(
+    {
+      email: email.value,
+      password: password.value,
+      otp: otp.value
+    }, langCodes)
+    .then((registerResponse: any) => {
+      userStoreLocal.updateAuthorization('Bearer ' + registerResponse.accessToken)
+      userStoreLocal.updateUserRole(registerResponse.role)
+      userStoreLocal.updateUserInfo({
+        email: registerResponse.email,
+        avatar: registerResponse.avatar
+      })
+      showDialog.handleToggleShowDialogRegister()
+    })
+}
+
 
 </script>
 
@@ -30,7 +72,7 @@ const otp = ref<number | string | null>(null)
       flat
     >
       <v-card-title class="mx-auto" style="font-weight: bolder">{{ $t('page.register.register') }}</v-card-title>
-      <v-form class="mx-auto" ref="form">
+      <v-form class="mx-auto" ref="form" v-model="valid">
         <div class="mx-auto">
           <nguyen-text-field
             v-model="email"
@@ -91,7 +133,7 @@ const otp = ref<number | string | null>(null)
             (value) => validation.lengthMax(value, 6, $t('page.register.fieldName.emailVerification'))
           ]"
           ></nguyen-text-field>
-          <v-btn class="mt-2 ml-2" color="#4CAF50">{{ $t('page.register.sendOTP') }}</v-btn>
+          <v-btn class="mt-2 ml-2" color="#4CAF50" @click="handleSendOtp">{{ $t('page.register.sendOTP') }}</v-btn>
         </div>
       </v-form>
       <v-card-subtitle style="margin-left: 16px">
@@ -103,6 +145,7 @@ const otp = ref<number | string | null>(null)
         <v-btn
           variant="elevated"
           class="bg-blue-darken-1"
+          @click="handleRegister"
         >
           {{ $t('page.register.register') }}
         </v-btn>

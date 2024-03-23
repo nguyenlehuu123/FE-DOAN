@@ -2,5 +2,9 @@
   "000000": "{0}",
   "000001": "system error",
   "000002": "incorrect {0}",
-  "000003": "{0} is not registered"
+  "000003": "{0} is not registered",
+  "000004": "gmail account has been registered previously",
+  "000005": "{0} is not correct",
+  "000006": "{0} has expired",
+  "000007": "You have not sent an otp"
 }
