@@ -8,5 +8,8 @@ export default {
   },
   register(payload = {}, langCodes = {}) {
     return http.POST(`${resource}/register`, payload, true, false, langCodes)
+  },
+  logout(payload = {}, langCodes = {}) {
+    return http.POST(`${resource}/logout`, payload, false, false, langCodes)
   }
 }

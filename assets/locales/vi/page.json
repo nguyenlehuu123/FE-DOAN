@@ -12,6 +12,10 @@
     "storyCard": {
       "newUpdate": "Mới cập nhật",
       "dayAgo": "ngày trước"
+    },
+    "info": {
+      "setting": "Cài đặt",
+      "logout": "Đăng xuất"
     }
   },
   "login": {

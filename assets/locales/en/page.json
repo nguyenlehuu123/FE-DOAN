@@ -12,6 +12,10 @@
     "storyCard": {
       "newUpdate": "new update",
       "dayAgo": "day ago"
+    },
+    "info": {
+      "setting": "Setting",
+      "logout": "Logout"
     }
   },
   "login": {
