@@ -11,5 +11,8 @@ export default {
   },
   getStoryNewUpdate(params = {}, langCodes = {}) {
     return http.GET(`${resource}/story-new-update`, params, false, false, langCodes);
+  },
+  searchAllStory(params = {}, langCodes = {}) {
+    return http.GET(`${resource}/search`, params, false, false, langCodes)
   }
 }

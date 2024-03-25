@@ -3,6 +3,7 @@ import NguyenHyperLink from "~/components/ui/NguyenHyperLink.vue";
 import { showDialogStore } from "~/stores/showDialogStore";
 import { userStore } from "~/stores/useStore";
 import { useI18n } from "vue-i18n";
+import { matchSorter } from 'match-sorter'
 import homeRepository from "~/repositories/master/homeRepository";
 import loginRepository from "~/repositories/master/loginRepository";
 
@@ -21,14 +22,15 @@ interface OptionCategoryEntityI {
   linkCategory: string
 }
 
-const items = ref([{
-  prependIcon: 'mdi-clock-outline',
-  title: 'recipe with chicken',
-},
-  {
-    prependIcon: 'mdi-clock-outline',
-    title: 'best hiking trails near me',
-  },])
+interface ISearchStory {
+  storyId: number;
+  storyName: string;
+  imageStory: string;
+  nameAuthor: string;
+}
+
+const searchAllStory = ref<ISearchStory[] | null>(null)
+const items = ref<ISearchStory[]>()
 
 const language = [
   'English',
@@ -39,9 +41,7 @@ const optionHeaderField = ref<OptionHeaderI[]>([])
 const i18n = useI18n()
 const selectedLanguage = ref<number>()
 const tabs = ref<number>(1)
-const model = defineModel()
 const toggleMode = defineModel('toggleMode')
-const inputRef = ref()
 const showDialog = showDialogStore()
 const userStoreLocal = userStore()
 
@@ -88,23 +88,25 @@ const handleInfoMenu = (index: number) => {
   })
 }
 
-const handleChangeTextSearch = (event: Event): void => {
-  const target = event.target as HTMLInputElement
-  model.value = target.value
+const handleChangeTextSearch = (event: string): void => {
+  items.value = matchSorter(searchAllStory.value as ISearchStory[], event, { keys: ['storyName', 'nameAuthor'] }).slice(0, 10)
 }
 
 onMounted(() => {
   Promise.all([
-    homeRepository.getOptionsHeader({}, {})
+    homeRepository.getOptionsHeader({}, {}),
+    homeRepository.searchAllStory()
   ])
     .then((response) => {
       optionHeaderField.value = response[0] as OptionHeaderI[]
+      searchAllStory.value = response[1] as ISearchStory[]
     })
 })
 
 const handleShowDialogLogin = () => {
   showDialog.handleToggleShowDialogLogin()
 }
+
 const handleToggleLanguage = (i: number) => {
   selectedLanguage.value = i
   if (i === 0) {
@@ -126,36 +128,44 @@ const handleToggleLanguage = (i: number) => {
         :width="40"
         cover
         src="https://st.truyenqqvn.com/template/frontend/images/logo-icon.png"
-        style="margin-left: 20px"
+        style="margin-left: 60px"
       ></v-img>
     </template>
     <v-app-bar-title>TRUYENVV</v-app-bar-title>
     <v-autocomplete
-      v-model="model"
       :items="items"
-      append-inner-icon="mdi-microphone"
       density="comfortable"
-      item-props
       menu-icon=""
       :placeholder="$t('page.home.searchPlaceHolder')"
       prepend-inner-icon="mdi-magnify"
       rounded
-      auto-select-first
       theme="light"
       variant="solo"
+      item-title="storyName"
       :focused="true"
       :hide-no-data="true"
       style="width: 300px; margin-top: 20px; margin-left: 50px;"
       class="v-focus--border-color"
-      ref="inputRef"
-      @change="handleChangeTextSearch"
+      @update:search="handleChangeTextSearch"
     >
-      <template #item="{ props, item }">
-        <v-list-item
-          v-bind="props"
-          :title="item.title"
-          :height="10"
-        ></v-list-item>
+      <!--      {{ items }}-->
+      <template v-slot:item="{ props, item }">
+        <v-card style="display: flex; cursor: pointer" @click="() => navigateTo(`manga-detail/${item.raw.storyId}`)">
+          <v-img
+            :src="item.raw.imageStory"
+            max-height="120"
+            max-width="80"
+            cover
+          ></v-img>
+          <div>
+            <v-card-title style="font-size: 16px; font-weight: 600; max-width: 560px">
+              {{ item.raw.storyName ? item.raw.storyName : '' }}
+            </v-card-title>
+            <v-card-subtitle>
+              {{ item.raw.nameAuthor ? item.raw.nameAuthor : '' }}
+            </v-card-subtitle>
+          </div>
+        </v-card>
       </template>
     </v-autocomplete>
     <v-spacer></v-spacer>
