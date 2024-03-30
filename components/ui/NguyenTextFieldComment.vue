@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { sendMessage } from "~/services/websocket";
+import { userStore } from "~/stores/useStore";
+import { dialogHttpStore } from "~/stores/dialogHttpStore";
+import { useI18n } from "vue-i18n";
+
 const slots = useSlots()
 defineOptions({
   inheritAttrs: false
 })
-
-const inputModel = defineModel()
-const emit = defineEmits(['showInputComment'])
-
 type ValidationResult = string | boolean
 type ValidationRule$1 =
   ValidationResult
@@ -23,6 +24,7 @@ interface Props {
   srcImage: string
   alt: string
   placeholder: string
+  storyId: number | string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -34,8 +36,30 @@ const props = withDefaults(defineProps<Props>(), {
   srcImage: '',
   alt: '',
   placeholder: '',
+  storyId: ''
 })
+const emit = defineEmits(['showInputComment'])
+const inputModel = ref(null)
+const userStoreLocal = userStore()
+const dialogHttpLocal = dialogHttpStore()
+const i18n = useI18n()
 
+//handle event
+const handleFocusComment = () => {
+  if (!userStoreLocal.authorization) {
+    dialogHttpLocal.setTitle("ERROR")
+    dialogHttpLocal.setContent(i18n.t('message.000008'))
+    dialogHttpLocal.setShow(true)
+  }
+}
+
+// web socket
+const handleSendMessage = () => {
+  sendMessage('/app/story/' + props.storyId + "/comment", {
+    message: inputModel.value,
+    token: userStoreLocal.authorization
+  })
+}
 </script>
 
 <template>
@@ -58,6 +82,7 @@ const props = withDefaults(defineProps<Props>(), {
           :density="props.density"
           :rules="props.rules"
           :placeholder="props.placeholder"
+          @update:focused="handleFocusComment"
         >
         </v-text-field>
       </div>
@@ -71,13 +96,14 @@ const props = withDefaults(defineProps<Props>(), {
             class="rounded-pill"
             @click="$emit('showInputComment', false)"
           >
-            Hủy
+            {{ $t('page.mangaDetail.cancel') }}
           </v-btn>
           <v-btn
             variant="tonal"
             class="rounded-pill"
+            @click="handleSendMessage"
           >
-            Bình luận
+            {{ $t('page.mangaDetail.comment') }}
           </v-btn>
         </div>
       </div>

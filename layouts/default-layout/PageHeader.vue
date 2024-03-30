@@ -148,7 +148,6 @@ const handleToggleLanguage = (i: number) => {
       class="v-focus--border-color"
       @update:search="handleChangeTextSearch"
     >
-      <!--      {{ items }}-->
       <template v-slot:item="{ props, item }">
         <v-card style="display: flex; cursor: pointer" @click="() => navigateTo(`manga-detail/${item.raw.storyId}`)">
           <v-img

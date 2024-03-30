@@ -54,6 +54,17 @@
     "comment": "Comment",
     "chapter": "Chapter",
     "dateSubmitted": "Date Submitted",
-    "unfollow": "Unfollow"
+    "unfollow": "Unfollow",
+    "cancel": "Cancel",
+    "writeComment": "write a comment...",
+    "writeFeedback": "write feedback...",
+    "feedback": "feedback",
+    "readMore": "Read more",
+    "justPosted": "Just posted",
+    "minuteAgo": "minute ago",
+    "hourAgo": "hour ago",
+    "dayAgo": "day ago",
+    "monthAgo": "month ago",
+    "yearAgo": "year ago"
   }
 }

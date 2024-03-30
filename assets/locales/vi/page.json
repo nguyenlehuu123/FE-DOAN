@@ -54,6 +54,17 @@
     "comment": "Bình luận",
     "chapter": "Chương",
     "dateSubmitted": "Ngày đăng",
-    "unfollow": "Hủy theo dõi"
+    "unfollow": "Hủy theo dõi",
+    "cancel": "Hủy",
+    "writeComment": "Viết bình luận",
+    "writeFeedback": "Viết phản hồi...",
+    "feedback": "phản hồi",
+    "readMore": "Đọc thêm",
+    "justPosted": "Mới đăng",
+    "minuteAgo": "phút trước",
+    "hourAgo": "giờ trước",
+    "dayAgo": "ngày trước",
+    "monthAgo": "tháng trước",
+    "yearAgo": "năm trước"
   }
 }

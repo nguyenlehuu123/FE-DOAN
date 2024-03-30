@@ -1,5 +1,6 @@
 import { userStore } from "~/stores/useStore";
 import { differenceInDays } from "date-fns/fp/differenceInDays";
+import { i18n } from "~/plugins/i18n";
 
 interface IHeaders {
   'Cache-Control': string;
@@ -25,37 +26,59 @@ const configHeaderApi = (data: number | string | object | null): IHeaders => {
   };
 
   if (typeof data === 'number' || typeof data === 'string' || typeof data === 'object') {
-    headers['Content-Type'] = 'application/json';
+    headers['Content-Type'] = 'application/json'
   }
 
-  return headers;
+  return headers
 };
 
 const DateHelper = {
   compareDate: (beforeDate: Date, afterDate: Date) => {
     if (beforeDate.getTime() < afterDate.getTime()) {
-      return -1;
+      return -1
     } else if (beforeDate.getTime() === afterDate.getTime()) {
-      return 0;
+      return 0
     }
-    return 1;
+    return 1
   },
   numberDayAgo: (beforeDate: Date): number => {
-    const today = new Date();
-    return differenceInDays(beforeDate, today);
+    const today = new Date()
+    return differenceInDays(beforeDate, today)
   },
   formatDateMMDDYYYY: (isoDateString: string) => {
-    const date = new Date(isoDateString);
+    const date = new Date(isoDateString)
 
     // Lấy thông tin ngày, tháng và năm từ đối tượng Date
-    const day = date.getDate();
-    const month = date.getMonth() + 1; // Tháng bắt đầu từ 0 nên cần cộng thêm 1
-    const year = date.getFullYear();
+    const day = date.getDate()
+    const month = date.getMonth() + 1 // Tháng bắt đầu từ 0 nên cần cộng thêm 1
+    const year = date.getFullYear()
 
     // Tạo chuỗi ngày/tháng/năm
-    const formattedDate = `${day}/${month}/${year}`;
+    const formattedDate = `${day}/${month}/${year}`
 
     return formattedDate;
+  },
+  dateAgo: (timestamp: number) => {
+    const now = new Date().getTime()
+    const diff = now - timestamp
+    const minutes = Math.floor(diff / (1000 * 60))
+    const hours = Math.floor(diff / (1000 * 60 * 60))
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
+    const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+    if (minutes < 1) {
+      return i18n.global.t('page.mangaDetail.justPosted');
+    } else if (minutes < 60) {
+      return `${minutes} ${i18n.global.t('page.mangaDetail.minuteAgo')}`;
+    } else if (hours < 24) {
+      return `${hours} ${i18n.global.t('page.mangaDetail.hourAgo')}`;
+    } else if (days < 30) {
+      return `${days} ${i18n.global.t('page.mangaDetail.dayAgo')}`;
+    } else if (months < 12) {
+      return `${months} ${i18n.global.t('page.mangaDetail.monthAgo')}`;
+    } else {
+      return `${years} ${i18n.global.t('page.mangaDetail.yearAgo')}`;
+    }
   }
 }
 

@@ -274,9 +274,10 @@ function handleUnfollowStory() {
       <nguyen-text-field-comment
         style="margin-top: 20px"
         density="compact"
-        placeholder="Viết bình luận ..."
+        :placeholder="$t('page.mangaDetail.writeComment')"
         src-image="https://i1-vnexpress.vnecdn.net/2020/11/19/lamborghini-huracan-sto-7012-1605777839.jpg?w=680&h=0&q=100&dpr=1&fit=crop&s=_LK7qvQPtHWLoFWTspAb9Q"
         alt="Linh Nhi"
+        :story-id="storyId"
       ></nguyen-text-field-comment>
       <nguyen-comment
         account-name="@nguyenle"
@@ -287,7 +288,9 @@ function handleUnfollowStory() {
         :dislike-num="0"
         :day-ago="1"
         :role-heart="true"
-      ></nguyen-comment>
+        :story-id="storyId"
+      >
+      </nguyen-comment>
     </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script>
-
+window.global = window;
 </script>
 <template>
   <NuxtLayout>
