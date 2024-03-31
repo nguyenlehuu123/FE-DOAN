@@ -17,6 +17,7 @@ interface Props {
   srgAvatar: string
   storyId: string | number
   commentId: number
+  totalCommentChildren: number | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -28,16 +29,17 @@ const props = withDefaults(defineProps<Props>(), {
   roleHeart: false,
   srgAvatar: '',
   storyId: '',
-  commentId: -1
+  commentId: -1,
+  totalCommentChildren: null
 })
 
 const showInputFeedBack = ref<boolean>(false)
 const textFeedBack = ref<string>('')
 const userStoreLocal = userStore()
 const i18n = useI18n()
-const showReadMoreRef = ref(null)
+const emit = defineEmits(['handleShowCommentChildren'])
 
-const handleReadMore = (commentId: number) => {
+const handleReadMore = () => {
   const textContainer = document.querySelector(`[data-id="text-container-height-${props.commentId}"]`)
   const readMoreBtn = document.querySelector(`[data-id="span-comment-${props.commentId}"]`)
   textContainer?.classList.toggle('expanded')
@@ -60,11 +62,14 @@ const handleFeedBack = (e: Event) => {
   showInputFeedBack.value = true
 }
 
+const handleShowCommentChildren = () => {
+  emit('handleShowCommentChildren')
+}
+
 </script>
 
 <template>
   <v-card
-    ref="showReadMoreRef"
     class="mx-auto"
     flat
   >
@@ -92,7 +97,7 @@ const handleFeedBack = (e: Event) => {
     </div>
     <div
       style="margin-left: 56px;"
-      @click="() => handleReadMore(commentId)"
+      @click="handleReadMore"
     >
       <span
         :data-id="`span-comment-${commentId}`"
@@ -140,6 +145,17 @@ const handleFeedBack = (e: Event) => {
         @show-input-comment="(showInput) => showInputFeedBack = showInput"
       ></nguyen-text-field-comment>
     </div>
+    <div v-if="totalCommentChildren">
+      <v-btn
+        prepend-icon="mdi-menu-down"
+        class="btn-down-num-feedback"
+        flat
+        rounded
+        @click="handleShowCommentChildren"
+      >
+        {{ totalCommentChildren }} {{ $t('page.mangaDetail.feedback') }}
+      </v-btn>
+    </div>
   </v-card>
 </template>
 
@@ -166,5 +182,14 @@ const handleFeedBack = (e: Event) => {
 
 .show-input--feedback {
   margin-left: 52px;
+}
+
+.btn-down-num-feedback:hover {
+  background-color: #BBDEFB;
+}
+
+.btn-down-num-feedback {
+  text-transform: none;
+  margin-left: 56px;
 }
 </style>

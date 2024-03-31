@@ -131,7 +131,7 @@ const userStoreLocal = userStore()
 const dialogHttpStoreLocal = dialogHttpStore()
 const getCommentResponses = reactive<IGetCommentResponse[]>([])
 const messages = reactive<ICommentResponse[]>([]);
-
+const showCommentChildren: Record<number, boolean> = reactive({})
 
 onMounted(() => {
   Promise.all([
@@ -199,6 +199,10 @@ function handleUnfollowStory() {
     })
     .catch(error => {
     })
+}
+
+function toggleCommentChildren(commentId: number) {
+  showCommentChildren[commentId] = !showCommentChildren[commentId]
 }
 
 // web socket
@@ -330,12 +334,15 @@ onBeforeUnmount(() => {
           :role-heart="true"
           :story-id="storyId"
           :comment-id="comment.commentId"
+          :total-comment-children="comment.commentResponses.length"
+          @handle-show-comment-children="args => toggleCommentChildren(comment.commentId)"
         >
         </nguyen-comment>
-        <div v-if="comment.commentResponses && comment.commentResponses.length"
-             v-for="feedback in comment.commentResponses"
-             :key="feedback.commentId"
-             style="margin-left: 52px"
+        <div
+          v-if="showCommentChildren[comment.commentId] && comment.commentResponses && comment.commentResponses.length"
+          v-for="feedback in comment.commentResponses"
+          :key="feedback.commentId"
+          style="margin-left: 52px"
         >
           <nguyen-comment
             flat
