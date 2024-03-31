@@ -25,6 +25,7 @@ interface Props {
   alt: string
   placeholder: string
   storyId: number | string
+  parentCommentId: number | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -36,7 +37,8 @@ const props = withDefaults(defineProps<Props>(), {
   srcImage: '',
   alt: '',
   placeholder: '',
-  storyId: ''
+  storyId: '',
+  parentCommentId: null
 })
 const emit = defineEmits(['showInputComment'])
 const inputModel = ref(null)
@@ -57,8 +59,10 @@ const handleFocusComment = () => {
 const handleSendMessage = () => {
   sendMessage('/app/story/' + props.storyId + "/comment", {
     message: inputModel.value,
-    token: userStoreLocal.authorization
+    token: userStoreLocal.authorization,
+    commentId: props.parentCommentId
   })
+  inputModel.value = null
 }
 </script>
 

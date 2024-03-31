@@ -8,7 +8,7 @@ import { DateHelper } from "~/common/helper";
 import followRepository from "~/repositories/master/followRepository";
 import { userStore } from "~/stores/useStore";
 import { dialogHttpStore } from "~/stores/dialogHttpStore";
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, toRaw } from "vue";
 import { connect, disconnect, subscribe } from "~/services/websocket";
 
 interface IStory {
@@ -65,6 +65,7 @@ interface ICommentResponse {
   dislikeComment: number | string;
   emailUserComment: string;
   avatar: string;
+  subCommentId?: number | null;
 }
 
 interface IGetCommentResponse extends ICommentResponse {
@@ -208,8 +209,17 @@ function toggleCommentChildren(commentId: number) {
 // web socket
 const fetchMessage = () => {
   subscribe("/topic/story/" + storyId + "/comment", message => {
-    messages.push(JSON.parse(message.body))
-    console.log("messages", messages)
+    const messageResponse: ICommentResponse = JSON.parse(message.body)
+    if (messageResponse.subCommentId === null) {
+      getCommentResponses.push(messageResponse as IGetCommentResponse)
+    } else {
+      for (let i = 0; i < getCommentResponses.length; i++) {
+        if (getCommentResponses[i].commentId === messageResponse.subCommentId) {
+          console.log(messageResponse)
+          getCommentResponses[i].commentResponses.push(messageResponse)
+        }
+      }
+    }
   })
 }
 
@@ -334,7 +344,8 @@ onBeforeUnmount(() => {
           :role-heart="true"
           :story-id="storyId"
           :comment-id="comment.commentId"
-          :total-comment-children="comment.commentResponses.length"
+          :parent-comment-id="comment.commentId"
+          :total-comment-children="comment.commentResponses?.length"
           @handle-show-comment-children="args => toggleCommentChildren(comment.commentId)"
         >
         </nguyen-comment>
@@ -355,6 +366,7 @@ onBeforeUnmount(() => {
             :role-heart="true"
             :story-id="storyId"
             :comment-id="feedback.commentId"
+            :parent-comment-id="comment.commentId"
           >
           </nguyen-comment>
         </div>

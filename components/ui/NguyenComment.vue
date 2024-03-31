@@ -16,7 +16,8 @@ interface Props {
   roleHeart: boolean
   srgAvatar: string
   storyId: string | number
-  commentId: number
+  commentId: number | null
+  parentCommentId: number | null
   totalCommentChildren: number | null
 }
 
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
   srgAvatar: '',
   storyId: '',
   commentId: -1,
+  parentCommentId: null,
   totalCommentChildren: null
 })
 
@@ -82,7 +84,7 @@ const handleShowCommentChildren = () => {
     <template #title>
       <div class="d-flex align-center">
         <h5>{{ props.accountName }}</h5>
-        <span class="text-body-2 ml-2">{{ DateHelper.dateAgo(props.dayAgo) }}</span>
+        <span class="text-body-2 ml-2">{{ DateHelper.dateAgo(parseInt(props.dayAgo)) }}</span>
       </div>
     </template>
     <div
@@ -139,6 +141,7 @@ const handleShowCommentChildren = () => {
         :placeholder="$t('page.mangaDetail.writeFeedback')"
         :src-image="userStoreLocal.userInfo.avatar"
         :story-id="props.storyId"
+        :parent-comment-id="props.parentCommentId"
         v-model="textFeedBack"
         density="compact"
         alt="Linh Nhi"

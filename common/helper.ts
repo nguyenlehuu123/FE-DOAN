@@ -59,21 +59,36 @@ const DateHelper = {
     return formattedDate;
   },
   dateAgo: (timestamp: number) => {
-    const now = new Date().getTime()
-    const diff = now - timestamp
-    const minutes = Math.floor(diff / (1000 * 60))
-    const hours = Math.floor(diff / (1000 * 60 * 60))
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const months = Math.floor(diff / (1000 * 60 * 60 * 24 * 30));
-    const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
-    if (minutes < 1) {
+    const now = new Date();
+    const date = new Date(timestamp);
+
+    const diffInTime = now.getTime() - date.getTime();
+    const diffInDays = Math.floor(diffInTime / (1000 * 60 * 60 * 24));
+
+    // Tính số năm
+    let years = now.getFullYear() - date.getFullYear();
+    // Tính số tháng
+    let months = now.getMonth() - date.getMonth() + years * 12;
+    // Tính số ngày
+    let days = now.getDate() - date.getDate();
+
+    // Nếu số ngày âm, giảm số tháng và tính lại số ngày
+    if (days < 0) {
+      months--;
+      days += new Date(now.getFullYear(), now.getMonth(), 0).getDate();
+    }
+
+    // Nếu số tháng âm, giảm số năm và tính lại số tháng
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Trả về chuỗi thời gian tương ứng
+    if (diffInDays < 1) {
       return i18n.global.t('page.mangaDetail.justPosted');
-    } else if (minutes < 60) {
-      return `${minutes} ${i18n.global.t('page.mangaDetail.minuteAgo')}`;
-    } else if (hours < 24) {
-      return `${hours} ${i18n.global.t('page.mangaDetail.hourAgo')}`;
-    } else if (days < 30) {
-      return `${days} ${i18n.global.t('page.mangaDetail.dayAgo')}`;
+    } else if (diffInDays < 30) {
+      return `${diffInDays} ${i18n.global.t('page.mangaDetail.dayAgo')}`;
     } else if (months < 12) {
       return `${months} ${i18n.global.t('page.mangaDetail.monthAgo')}`;
     } else {
