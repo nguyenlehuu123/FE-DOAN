@@ -7,5 +7,6 @@
   "000005": "{0} is not correct",
   "000006": "{0} has expired",
   "000007": "You have not sent an otp",
-  "000008": "Please log in before commenting!"
+  "000008": "Please log in before commenting!",
+  "000009": "You need to login to perform this function!"
 }

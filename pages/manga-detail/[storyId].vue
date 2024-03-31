@@ -8,6 +8,8 @@ import { DateHelper } from "~/common/helper";
 import followRepository from "~/repositories/master/followRepository";
 import { userStore } from "~/stores/useStore";
 import { dialogHttpStore } from "~/stores/dialogHttpStore";
+import { onMounted, reactive } from "vue";
+import { connect, disconnect, subscribe } from "~/services/websocket";
 
 interface IStory {
   createTimestamp: string;
@@ -54,6 +56,21 @@ interface Items {
   viewNumber: number,
   updateTimestamp: string
 }
+
+interface ICommentResponse {
+  commentId: string | number;
+  message: string;
+  timeComment: string;
+  likeComment: number | string;
+  dislikeComment: number | string;
+  emailUserComment: string;
+  avatar: string;
+}
+
+interface IGetCommentResponse extends ICommentResponse {
+  commentResponses: ICommentResponse[]
+}
+
 
 const breadcrumbs = [
   {
@@ -112,16 +129,22 @@ const storyFollowed = ref<IStory[] | null>(null)
 const isFollow = ref<boolean>(false)
 const userStoreLocal = userStore()
 const dialogHttpStoreLocal = dialogHttpStore()
+const getCommentResponses = reactive<IGetCommentResponse[]>([])
+const messages = reactive<ICommentResponse[]>([]);
+
 
 onMounted(() => {
   Promise.all([
-    mangaDetailRepository.getMangaDetail(storyId)
+    mangaDetailRepository.getMangaDetail(storyId),
+    mangaDetailRepository.getAllCommentMana(storyId)
   ])
     .then((response) => {
       detailManga.value = response[0] as IStory
       chapterData.value = detailManga.value.chapterEntities as IChapterData[]
+      getCommentResponses.push(...response[1] as IGetCommentResponse[])
     })
     .catch((error) => {
+      // TODO
     })
 
   userStoreLocal.getAuthorization ? followRepository.getStoryFollowed()
@@ -164,7 +187,7 @@ function handleFollowStory() {
         // TODO
       })
   } else {
-    dialogHttpStoreLocal.setContent("You need to login to perform this function")
+    dialogHttpStoreLocal.setContent(i18n.t('message.000009'))
     dialogHttpStoreLocal.setShow(true)
   }
 }
@@ -177,6 +200,22 @@ function handleUnfollowStory() {
     .catch(error => {
     })
 }
+
+// web socket
+const fetchMessage = () => {
+  subscribe("/topic/story/" + storyId + "/comment", message => {
+    messages.push(JSON.parse(message.body))
+    console.log("messages", messages)
+  })
+}
+
+onMounted(() => {
+  connect().then(fetchMessage)
+})
+
+onBeforeUnmount(() => {
+  disconnect()
+})
 </script>
 
 <template>
@@ -272,25 +311,47 @@ function handleUnfollowStory() {
         <h3 style="margin-left: 20px">{{ $t('page.mangaDetail.comment') }}</h3>
       </div>
       <nguyen-text-field-comment
+        :placeholder="$t('page.mangaDetail.writeComment')"
+        :src-image="userStoreLocal.userInfo.avatar"
+        :story-id="storyId"
         style="margin-top: 20px"
         density="compact"
-        :placeholder="$t('page.mangaDetail.writeComment')"
-        src-image="https://i1-vnexpress.vnecdn.net/2020/11/19/lamborghini-huracan-sto-7012-1605777839.jpg?w=680&h=0&q=100&dpr=1&fit=crop&s=_LK7qvQPtHWLoFWTspAb9Q"
         alt="Linh Nhi"
-        :story-id="storyId"
       ></nguyen-text-field-comment>
-      <nguyen-comment
-        account-name="@nguyenle"
-        text-comment="em vẫn muốn được anh lì xì"
-        flat
-        srg-avatar="https://i1-vnexpress.vnecdn.net/2020/11/19/lamborghini-huracan-sto-7012-1605777839.jpg?w=680&h=0&q=100&dpr=1&fit=crop&s=_LK7qvQPtHWLoFWTspAb9Q"
-        :like-num="1"
-        :dislike-num="0"
-        :day-ago="1"
-        :role-heart="true"
-        :story-id="storyId"
-      >
-      </nguyen-comment>
+      <div v-for="comment in getCommentResponses" :key="comment.commentId">
+        <nguyen-comment
+          flat
+          :account-name="comment.emailUserComment"
+          :text-comment="comment.message"
+          :srg-avatar="comment.avatar"
+          :like-num="comment.likeComment"
+          :dislike-num="comment.dislikeComment"
+          :day-ago="comment.timeComment"
+          :role-heart="true"
+          :story-id="storyId"
+          :comment-id="comment.commentId"
+        >
+        </nguyen-comment>
+        <div v-if="comment.commentResponses && comment.commentResponses.length"
+             v-for="feedback in comment.commentResponses"
+             :key="feedback.commentId"
+             style="margin-left: 52px"
+        >
+          <nguyen-comment
+            flat
+            :account-name="feedback.emailUserComment"
+            :text-comment="feedback.message"
+            :srg-avatar="feedback.avatar"
+            :like-num="feedback.likeComment"
+            :dislike-num="feedback.dislikeComment"
+            :day-ago="feedback.timeComment"
+            :role-heart="true"
+            :story-id="storyId"
+            :comment-id="feedback.commentId"
+          >
+          </nguyen-comment>
+        </div>
+      </div>
     </div>
   </div>
 </template>

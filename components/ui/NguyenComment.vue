@@ -1,123 +1,115 @@
 <script setup lang="ts">
 import NguyenLike from "~/components/ui/NguyenLike.vue";
 import NguyenTextFieldComment from "~/components/ui/NguyenTextFieldComment.vue";
-import { onBeforeUnmount, onMounted, reactive, toRaw } from "vue";
-import { connect, disconnect, subscribe } from "~/services/websocket";
+import { onMounted } from "vue";
 import { DateHelper } from "~/common/helper";
-import mangaDetailRepository from "~/repositories/master/mangaDetailRepository";
+import { useI18n } from "vue-i18n";
+import { userStore } from "~/stores/useStore";
+
 
 interface Props {
+  accountName: string | null
+  dayAgo: number | string | null
+  textComment: string
+  likeNum: number | string
+  dislikeNum: number | string
   roleHeart: boolean
-  storyId: number | string
+  srgAvatar: string
+  storyId: string | number
+  commentId: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  accountName: '',
+  dayAgo: 0,
+  textComment: '',
+  likeNum: 0,
+  dislikeNum: 0,
   roleHeart: false,
-  storyId: ''
+  srgAvatar: '',
+  storyId: '',
+  commentId: -1
 })
 
-interface ICommentResponse {
-  commentId: string | number;
-  message: string;
-  timeComment: string; // Assuming Timestamp is converted to string
-  likeComment: number | string;
-  dislikeComment: number | string;
-  emailUserComment: string;
-  avatar: string;
-}
-
-interface IGetCommentResponse extends ICommentResponse {
-  commentResponses: ICommentResponse[]
-}
-
-const showReadMore = ref<boolean>(false)
 const showInputFeedBack = ref<boolean>(false)
 const textFeedBack = ref<string>('')
-const messages = reactive<ICommentResponse[]>([]);
-const getCommentResponses = reactive<IGetCommentResponse[]>([])
-const handleReadMore = () => {
-  const textContainer = document.querySelector('.text-container-height')
-  const readMoreBtn = document.getElementsByClassName('text-decoration-underline-read-more')
+const userStoreLocal = userStore()
+const i18n = useI18n()
+const showReadMoreRef = ref(null)
+
+const handleReadMore = (commentId: number) => {
+  const textContainer = document.querySelector(`[data-id="text-container-height-${props.commentId}"]`)
+  const readMoreBtn = document.querySelector(`[data-id="span-comment-${props.commentId}"]`)
   textContainer?.classList.toggle('expanded')
   if (textContainer?.classList.contains('expanded')) {
-    readMoreBtn[0].innerHTML = 'Thu gọn'
+    readMoreBtn ? readMoreBtn.innerHTML = i18n.t('page.mangaDetail.collapse') : ''
   } else {
-    readMoreBtn[0].innerHTML = 'Đọc thêm'
+    readMoreBtn ? readMoreBtn.innerHTML = i18n.t('page.mangaDetail.readMore') : ''
   }
 }
 
 onMounted(() => {
-  const textContainer = document.getElementsByClassName('text-container-height')
-  const textSpan = document.getElementsByClassName('text-height')
-  if (textSpan[0]?.clientHeight > textContainer[0]?.clientHeight) {
-    showReadMore.value = true
+  const item = document.querySelector(`[data-id="text-comment-${props.commentId}"]`)
+  if (item && item.clientHeight <= 24) {
+    const spanComment = document.querySelector(`[data-id="span-comment-${props.commentId}"]`)
+    spanComment && spanComment.setAttribute("style", "display: none;");
   }
-})
-
-onMounted(() => {
-  Promise.all([mangaDetailRepository.getAllCommentMana(props.storyId)])
-    .then((response) => {
-      getCommentResponses.push(...response[0] as IGetCommentResponse[])
-    })
 })
 
 const handleFeedBack = (e: Event) => {
   showInputFeedBack.value = true
 }
 
-// web socket
-const fetchMessage = () => {
-  subscribe("/topic/story/" + props.storyId + "/comment", message => {
-    messages.push(JSON.parse(message.body))
-    console.log("messages", messages)
-  })
-}
-
-onMounted(() => {
-  connect().then(fetchMessage)
-})
-
-onBeforeUnmount(() => {
-  disconnect()
-})
-
 </script>
 
 <template>
   <v-card
+    ref="showReadMoreRef"
     class="mx-auto"
     flat
-    v-for="comment in messages"
   >
     <template #prepend>
       <v-avatar
         style="margin-left: -14px"
-        :image="comment.avatar"
+        :image="props.srgAvatar"
       ></v-avatar>
     </template>
     <template #title>
       <div class="d-flex align-center">
-        <h5>{{ comment.emailUserComment }}</h5>
-        <span class="text-body-2 ml-2">{{ DateHelper.dateAgo(comment.timeComment) }}</span>
+        <h5>{{ props.accountName }}</h5>
+        <span class="text-body-2 ml-2">{{ DateHelper.dateAgo(props.dayAgo) }}</span>
       </div>
     </template>
-    <div class="text-container-height mt-n3" style="margin-left: 56px">
-        <span class="text-height">
-          {{ comment.message }}
+    <div
+      :data-id="`text-container-height-${commentId}`"
+      class="text-container-height mt-n3"
+      style="margin-left: 56px">
+        <span class="text-height"
+              :data-id="`text-comment-${commentId}`"
+        >
+          {{ props.textComment }}
         </span>
     </div>
-    <div @click="handleReadMore" v-if="showReadMore">
-      <span class="text-caption text-decoration-underline-read-more">{{ $t('page.mangaDetail.readMore') }}</span>
+    <div
+      style="margin-left: 56px;"
+      @click="() => handleReadMore(commentId)"
+    >
+      <span
+        :data-id="`span-comment-${commentId}`"
+        class="text-caption text-decoration-underline-read-more"
+      >
+        {{ $t('page.mangaDetail.readMore') }}
+      </span>
     </div>
     <v-card-actions style="margin-left: 42px" class="d-flex align-center ga-2">
       <nguyen-like
         icon="mdi-thumb-up"
-        :like-num="comment.likeComment"
+        :like-num="props.likeNum"
         :liked="false"
       ></nguyen-like>
       <nguyen-like
         icon="mdi-thumb-down"
-        :like-num="comment.dislikeComment"
+        :like-num="props.dislikeNum"
         :liked="false"
       ></nguyen-like>
       <div v-if="props.roleHeart">
@@ -139,12 +131,12 @@ onBeforeUnmount(() => {
     </template>
     <div v-if="showInputFeedBack" class="show-input--feedback">
       <nguyen-text-field-comment
+        :placeholder="$t('page.mangaDetail.writeFeedback')"
+        :src-image="userStoreLocal.userInfo.avatar"
+        :story-id="props.storyId"
         v-model="textFeedBack"
         density="compact"
-        :placeholder="$t('page.mangaDetail.writeFeedback')"
-        src-image="https://i1-vnexpress.vnecdn.net/2020/11/19/lamborghini-huracan-sto-7012-1605777839.jpg?w=680&h=0&q=100&dpr=1&fit=crop&s=_LK7qvQPtHWLoFWTspAb9Q"
         alt="Linh Nhi"
-        :story-id="storyId"
         @show-input-comment="(showInput) => showInputFeedBack = showInput"
       ></nguyen-text-field-comment>
     </div>

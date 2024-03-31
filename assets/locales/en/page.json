@@ -65,6 +65,7 @@
     "hourAgo": "hour ago",
     "dayAgo": "day ago",
     "monthAgo": "month ago",
-    "yearAgo": "year ago"
+    "yearAgo": "year ago",
+    "collapse": "collapse"
   }
 }
