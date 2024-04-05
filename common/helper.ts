@@ -2,6 +2,16 @@ import { userStore } from "~/stores/useStore";
 import { differenceInDays } from "date-fns/fp/differenceInDays";
 import { i18n } from "~/plugins/i18n";
 
+import { createPinia } from 'pinia';
+import { createApp } from 'vue'
+import App from '~/app.vue'
+
+const pinia = createPinia()
+const app = createApp(App)
+app.use(pinia)
+app.mount('#app')
+
+
 interface IHeaders {
   'Cache-Control': string;
   Pragma: string;

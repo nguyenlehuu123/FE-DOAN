@@ -9,7 +9,7 @@ definePageMeta({
 
 <template>
   <v-card
-    class="mx-4"
+    class="mx-4 mt-8"
     flat
   >
     <nguyen-text-field
@@ -17,6 +17,7 @@ definePageMeta({
       label="Test label"
       density="compact"
       text-field-width="200"
+      :horizontal="true"
       :rules="[
                 validation.required
             ]"

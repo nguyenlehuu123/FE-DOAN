@@ -2,6 +2,7 @@
 
 import { definePageMeta } from '#imports'
 import NguyenSelect from "~/components/ui/NguyenSelect.vue";
+import validation from "~/common/validation";
 
 definePageMeta({
   layout: false
@@ -52,11 +53,16 @@ const items = [
     <nguyen-select
       v-model="input"
       width="500px"
+      label-select="Tên tác giả"
+      horizontal
       label="chọn thể loại"
-      :multiple="true"
-      :items="items"
       item-title="text"
       item-value="key"
+      :multiple="true"
+      :items="items"
+      :rules="[
+        validation.required
+      ]"
     />
   </v-card>
 </template>

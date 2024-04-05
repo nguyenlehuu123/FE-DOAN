@@ -8,7 +8,7 @@ import { DateHelper } from "~/common/helper";
 import followRepository from "~/repositories/master/followRepository";
 import { userStore } from "~/stores/useStore";
 import { dialogHttpStore } from "~/stores/dialogHttpStore";
-import { onMounted, reactive, toRaw } from "vue";
+import { onMounted, reactive } from "vue";
 import { connect, disconnect, subscribe } from "~/services/websocket";
 
 interface IStory {
@@ -73,19 +73,6 @@ interface IGetCommentResponse extends ICommentResponse {
 }
 
 
-const breadcrumbs = [
-  {
-    title: 'Trang chủ',
-    disabled: false,
-    href: 'breadcrumbs_dashboard',
-  },
-  {
-    title: ' Trục Phong Nguyệt, Dư Quân Hỉ',
-    disabled: false,
-    href: 'breadcrumbs_link_1',
-  }
-]
-
 const i18n = useI18n()
 const headersFixed = [
   {
@@ -131,8 +118,19 @@ const isFollow = ref<boolean>(false)
 const userStoreLocal = userStore()
 const dialogHttpStoreLocal = dialogHttpStore()
 const getCommentResponses = reactive<IGetCommentResponse[]>([])
-const messages = reactive<ICommentResponse[]>([]);
 const showCommentChildren: Record<number, boolean> = reactive({})
+
+const breadcrumbs = [
+  {
+    title: 'Trang chủ',
+    disabled: false,
+    href: '/home',
+  },
+  {
+    title: detailManga.value?.storyName,
+    disabled: false,
+  }
+]
 
 onMounted(() => {
   Promise.all([
@@ -215,7 +213,6 @@ const fetchMessage = () => {
     } else {
       for (let i = 0; i < getCommentResponses.length; i++) {
         if (getCommentResponses[i].commentId === messageResponse.subCommentId) {
-          console.log(messageResponse)
           getCommentResponses[i].commentResponses.push(messageResponse)
         }
       }

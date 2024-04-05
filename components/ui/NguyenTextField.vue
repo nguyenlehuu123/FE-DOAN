@@ -28,6 +28,7 @@ interface Props {
   rules?: readonly ValidationRule$1[]
   disabled?: boolean
   textFieldWidth?: string | number | null
+  horizontal: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -36,11 +37,12 @@ const props = withDefaults(defineProps<Props>(), {
   formatFunction: () => [],
   maxLength: null,
   label: '',
-  labelWidth: 140,
+  labelWidth: 150,
   labelClass: null,
   rules: () => [],
   disabled: false,
-  textFieldWidth: null
+  textFieldWidth: null,
+  horizontal: false
 })
 
 const textFieldWidth = computed(() => {
@@ -71,15 +73,17 @@ const format = (event: Event) => {
 </script>
 
 <template>
-  <div class="py-0">
+  <div class="py-0" :style="`${props.horizontal ? 'display: flex; align-items: start;' : ''}`">
     <div
       v-if="props.label !== ''"
-      class="py-1 d-flex align-start"
+      class="py-1"
       :style="`width: ${(props.labelWidth + '').replace('px', '')}px; ${(props.labelWidth + '').replace('px', '')}px`"
     >
-        <span>
-          {{ props.label }}
-        </span>
+      <span>
+        {{ props.label }}
+        <v-icon v-if="horizontal && props.rules.toString().includes('required')" icon="mdi-hexagram"
+                style="font-size: 12px; color: #EF5350"></v-icon>
+      </span>
     </div>
     <div :style="`width: ${textFieldWidth}px`" class="py-0 d-flex align-center"
          :class="!textFieldWidth ? 'flex-1-0' : ''">

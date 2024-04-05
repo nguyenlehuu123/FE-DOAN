@@ -22,31 +22,52 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div>
-    <div style="color: #FF8F00" class="ga-2 d-flex align-center my-2">
-      <v-icon icon="mdi-database-search"></v-icon>
-      <span>{{ $t('page.mangaDetail.chapterList') }}</span>
-    </div>
-    <div class="border-table">
-      <v-data-table-virtual
-        v-bind="$attrs"
-        :headers="headers"
-        :height="props.height"
-        :loading="props.loading"
-        :items="props.items"
-        :sticky="true"
-        item-value="name"
-      >
-        <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
-          <slot :name="name" v-bind="slotData"></slot>
-        </template>
-      </v-data-table-virtual>
-    </div>
+
+  <div
+    class="border-table"
+    v-if="props.items.length > 0"
+  >
+    <v-data-table-virtual
+      v-bind="$attrs"
+      :headers="headers"
+      :height="props.height"
+      :loading="props.loading"
+      :items="props.items"
+      :sticky="true"
+      fixed-header
+      item-value="name"
+      class="css-table-column"
+    >
+      <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
+        <slot :name="name" v-bind="slotData"></slot>
+      </template>
+      <template #bottom>
+      </template>
+      <template #no-data></template>
+    </v-data-table-virtual>
   </div>
+  <div v-else
+       style="width: 100%; height: 25px; background-color: rgb(142, 142, 142, 0.2); border: none"
+  >
+
+  </div>
+
 </template>
-<style scoped>
+<style lang="scss">
 .border-table {
   border: black 1px solid;
   border-radius: 4px;
+}
+
+.css-table-column table {
+  border-collapse: collapse !important; /* Collapses the table borders */
+
+}
+
+.css-table-column th,
+.css-table-column td {
+  border: 1px solid #ddd !important; /* Adds a border to each cell */
+  text-align: left; /* Aligns text to the left */
+  padding: 8px; /* Adds padding inside each cell */
 }
 </style>
