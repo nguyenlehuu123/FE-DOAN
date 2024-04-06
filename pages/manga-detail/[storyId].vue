@@ -18,6 +18,7 @@ interface IStory {
   description: string;
   followNumber: number;
   image: string;
+  releaseDate: string,
   likeNumber: number;
   status: number;
   storyName: string;
@@ -48,12 +49,15 @@ interface IChapterData {
   chapterId: number;
   viewNumber: number;
   statusKey: number;
+  chapterNumber: number;
+  releaseDate: string;
 }
 
 interface Items {
-  chapterId: string,
+  chapterNumber: string,
   statusKey: number,
   viewNumber: number,
+  releaseDate: string,
   updateTimestamp: string
 }
 
@@ -76,35 +80,43 @@ interface IGetCommentResponse extends ICommentResponse {
 const i18n = useI18n()
 const headersFixed = [
   {
-    key: 'chapterId',
+    key: 'chapterNumber',
     title: i18n.t('page.mangaDetail.chapter'),
-    align: 'start',
+    align: 'center',
     sortable: true,
-    width: '30%',
+    width: '15%',
     fixed: true
   },
   {
     key: 'statusKey',
     title: i18n.t('page.mangaDetail.status'),
-    align: 'start',
+    align: 'center',
     sortable: false,
-    width: '20%',
+    width: '15%',
     fixed: true
   },
   {
     key: 'viewNumber',
     title: i18n.t('page.mangaDetail.view'),
-    align: 'start',
+    align: 'center',
     sortable: true,
     width: '20%',
     fixed: true
   },
   {
+    key: 'releaseDate',
+    title: i18n.t('page.mangaDetail.releaseDate'),
+    align: 'center',
+    sortable: true,
+    width: '25%',
+    fixed: true
+  },
+  {
     key: 'updateTimestamp',
     title: i18n.t('page.mangaDetail.dateSubmitted'),
-    align: 'start',
+    align: 'center',
     sortable: true,
-    width: '30%',
+    width: '25%',
     fixed: true
   },
 ]
@@ -156,9 +168,10 @@ watch(chapterData, () => {
   if (chapterData.value) {
     items.value = chapterData.value.map((cha: IChapterData) => {
       return {
-        chapterId: "Chapter " + cha.chapterId.toString(),
+        chapterNumber: "Chapter " + cha.chapterNumber.toString(),
         statusKey: cha.statusKey,
         viewNumber: cha.viewNumber,
+        releaseDate: DateHelper.formatDateMMDDYYYY(cha.releaseDate),
         updateTimestamp: DateHelper.formatDateMMDDYYYY(cha.updateTimestamp)
       }
     })
@@ -248,27 +261,32 @@ onBeforeUnmount(() => {
       </div>
       <div style="margin-left: 50px">
         <h2>{{ detailManga && detailManga.storyName }}</h2>
-        <div class="d-flex align-center mt-4">
+        <div class="d-flex align-center mt-3">
           <v-icon icon="mdi-account-star" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.author') }}</p>
           <p>{{ detailManga && handleListNameAuthor(detailManga.authorEntities) }}</p>
         </div>
-        <div class="d-flex align-center mt-4">
+        <div class="d-flex align-center mt-3">
           <v-icon icon="mdi-wifi" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.status') }}</p>
           <p>Đang Cập Nhật</p>
         </div>
-        <div class="d-flex align-center mt-4">
+        <div class="d-flex align-center mt-3">
+          <v-icon icon="mdi-update" style="font-size: 20px; margin-right: 4px"></v-icon>
+          <p style="width: 140px">{{ $t('page.mangaDetail.releaseDate') }}</p>
+          <p>{{ detailManga && DateHelper.formatDateMMDDYYYY(detailManga.releaseDate) }}</p>
+        </div>
+        <div class="d-flex align-center mt-3">
           <v-icon icon="mdi-thumb-up" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.likes') }}</p>
           <p>{{ detailManga && detailManga.likeNumber }}</p>
         </div>
-        <div class="d-flex align-center mt-4">
+        <div class="d-flex align-center mt-3">
           <v-icon icon="mdi-heart" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.flow') }}</p>
           <p>{{ detailManga && detailManga.followNumber }}</p>
         </div>
-        <div class="d-flex align-center mt-4">
+        <div class="d-flex align-center mt-3">
           <v-icon icon="mdi-eye-arrow-left" style="font-size: 20px; margin-right: 4px"></v-icon>
           <p style="width: 140px">{{ $t('page.mangaDetail.view') }}</p>
           <p>34539354</p>

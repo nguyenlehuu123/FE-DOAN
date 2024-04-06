@@ -19,7 +19,8 @@ export default defineNuxtConfig({
   plugins: [
     '~/plugins/toast',
     '~/plugins/vuetify',
-    '~/plugins/i18n'
+    '~/plugins/i18n',
+    '~/plugins/firebase'
   ],
   modules: [
     '@pinia/nuxt',

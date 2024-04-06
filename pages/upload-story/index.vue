@@ -4,6 +4,7 @@ import NguyenDataTable from "~/components/ui/NguyenDataTable.vue";
 import NguyenSelect from "~/components/ui/NguyenSelect.vue";
 import validation from "~/common/validation";
 import NguyenTextArea from "~/components/ui/NguyenTextArea.vue";
+import NguyenUploadImage from "~/components/ui/NguyenUploadImage.vue";
 
 
 const headersFixed = [
@@ -80,6 +81,49 @@ const headersFixed = [
     fixed: true
   },
 ]
+const headersChapter = [
+  {
+    key: 'chapter',
+    title: 'Chapter',
+    align: 'center',
+    sortable: true,
+    width: '15%',
+    fixed: true
+  },
+  {
+    key: 'author',
+    title: 'Author',
+    align: 'center',
+    sortable: true,
+    width: '30%',
+    fixed: true
+  },
+  {
+    key: 'dateSubmitted',
+    title: 'Date Submitted',
+    align: 'center',
+    sortable: true,
+    width: '25%',
+    fixed: true
+  },
+  {
+    key: 'view',
+    title: 'view chapter',
+    align: 'center',
+    sortable: true,
+    width: '20%',
+    fixed: true
+  },
+  {
+    key: 'status',
+    title: 'Status',
+    align: 'center',
+    sortable: false,
+    width: '10%',
+    fixed: true
+  }
+]
+
 const items = [
   {
     no: 1,
@@ -187,6 +231,37 @@ const itemsSelect = [
   }
 ]
 
+const itemsChapter = [
+  {
+    chapter: 'Chapter1',
+    author: 'Author 1, Author 2',
+    dateSubmitted: '10/10/2022',
+    view: 100,
+    status: 0
+  },
+  {
+    chapter: 'Chapter1',
+    author: 'Author 1, Author 2',
+    dateSubmitted: '10/10/2022',
+    view: 100,
+    status: 0
+  },
+  {
+    chapter: 'Chapter1',
+    author: 'Author 1, Author 2',
+    dateSubmitted: '10/10/2022',
+    view: 100,
+    status: 0
+  },
+  {
+    chapter: 'Chapter1',
+    author: 'Author 1, Author 2',
+    dateSubmitted: '10/10/2022',
+    view: 100,
+    status: 0
+  }
+]
+
 </script>
 <template>
   <div>
@@ -245,43 +320,67 @@ const itemsSelect = [
         </v-btn>
       </div>
       <v-divider class="mb-6"></v-divider>
+
+      <!--      add story-->
       <div>
-        <div
-        >
-          <nguyen-select
-            label-select="Tên tác giả"
-            density="compact"
-            width="500px"
-            item-title="text"
-            item-value="key"
-            :items="itemsSelect"
-            :multiple="true"
-            :text-field-width="500"
-            :horizontal="true"
-            :rules="[
+        <div style="display: flex">
+          <div>
+            <nguyen-select
+              label-select="Tên tác giả"
+              density="compact"
+              width="500px"
+              item-title="text"
+              item-value="key"
+              :items="itemsSelect"
+              :multiple="true"
+              :text-field-width="500"
+              :horizontal="true"
+              :rules="[
             (value) => validation.required(value, 'Tên tác giả')
           ]"
-          ></nguyen-select>
-          <nguyen-text-field
-            label="Tên truyện"
-            density="compact"
-            width="36"
-            :text-field-width="500"
-            :horizontal="true"
-            :rules="[
+            ></nguyen-select>
+            <nguyen-text-field
+              label="Tên truyện"
+              density="compact"
+              width="36"
+              :text-field-width="500"
+              :horizontal="true"
+              :rules="[
             (value) => validation.required(value, 'Tên truyện')
           ]"
-          ></nguyen-text-field>
+            ></nguyen-text-field>
+          </div>
+          <div style="margin-left: 200px">
+            <nguyen-upload-image
+              width-image="120"
+              height-image="150"
+            ></nguyen-upload-image>
+          </div>
         </div>
         <nguyen-text-area
+          label="Mô tả truyện"
+          :rows="4"
           :max-length="2000"
           :rules="[
-            (value) => validation.required(value, 'Mô tả truyện')
+            (value) => validation.required(value, 'Mô tả truyện'),
+            (value) => validation.lengthMax(value, 2000, 'Mô tả truyện'),
+            (value) => validation.lengthMin(value, 100, 'Mô tả truyện')
           ]"
-          :rows="4"
-          label="Mô tả truyện"
         >
         </nguyen-text-area>
+        <div>
+          <div>
+            <input type="file" style="display: none">
+            <v-btn prepend-icon="mdi-upload" style="border: 1px #4FC3F7 dashed;" flat>Upload File</v-btn>
+          </div>
+          <div>
+            <nguyen-data-table
+              :headers="headersChapter"
+              :items="itemsChapter"
+            >
+            </nguyen-data-table>
+          </div>
+        </div>
       </div>
     </div>
   </div>

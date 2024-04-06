@@ -58,7 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
       </v-textarea>
     </div>
     <div v-if="props.maxLength && inputValue !== null && inputValue" class="py-0 px-0 mt-n5 text-overline">
-      {{ inputValue.length }} / {{ props.maxLength }} ký tự
+      <span style="float: right">{{ inputValue.length }} / {{ props.maxLength }} ký tự</span>
     </div>
   </div>
 </template>

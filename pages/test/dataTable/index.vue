@@ -87,78 +87,6 @@ const items = [
     status: 0,
     view: 100,
     dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 0,
-    view: 100,
-    dateSubmitted: '10/10/2022',
-  },
-  {
-    chapter: 'Chapter1',
-    status: 1,
-    view: 100,
-    dateSubmitted: '20/10/2022',
   }
 ]
 
@@ -172,7 +100,6 @@ const items = [
     <nguyen-data-table
       :headers="headersFixed"
       :items="items"
-      :height="400"
     >
       <template #item.view="{ item }">
         <div>
