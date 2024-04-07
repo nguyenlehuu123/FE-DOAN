@@ -13,6 +13,7 @@ definePageMeta({
     label="Test DatePicker"
     :label-width="150"
     :horizontal="true"
+    :text-field-width="200"
     :rules="[
       validation.required
     ]"

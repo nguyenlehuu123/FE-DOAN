@@ -148,5 +148,4 @@ watch(page, () => {
 </template>
 
 <style scoped>
-
 </style>

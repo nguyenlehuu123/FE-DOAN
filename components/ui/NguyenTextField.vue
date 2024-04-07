@@ -5,7 +5,7 @@ defineOptions({
 })
 
 const model = defineModel()
-
+const textFieldRef = ref()
 const emit = defineEmits([
   'change'
 ])
@@ -70,6 +70,16 @@ const format = (event: Event) => {
   model.value = temp
   emit('change', event)
 }
+
+const validate = async function () {
+  await nextTick()
+  textFieldRef.value.validate()
+}
+
+defineExpose({
+  textFieldRef,
+  validate
+})
 </script>
 
 <template>
@@ -88,6 +98,7 @@ const format = (event: Event) => {
     <div :style="`width: ${textFieldWidth}px`" class="py-0 d-flex align-center"
          :class="!textFieldWidth ? 'flex-1-0' : ''">
       <v-text-field
+        ref="textFieldRef"
         v-model="model"
         v-bind="$attrs"
         validate-on="blur"
