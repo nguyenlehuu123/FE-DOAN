@@ -48,7 +48,7 @@ const selectDateHandle = (date: Date) => {
 
 // check format date dd/MM/yyyy or ddMMyyyy
 const formatDateRule = function (value: string | null) {
-  if (value === null || value === '') {
+  if (value === null || value === '' || !value) {
     return true
   }
 
@@ -67,7 +67,7 @@ const formatDateRule = function (value: string | null) {
 
 // validate date invalid
 const validDateRule = function (value: string | null) {
-  if (value === null || value === '') {
+  if (value === null || value === '' || !value) {
     return true
   }
 

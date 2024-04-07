@@ -5,6 +5,7 @@ import NguyenSelect from "~/components/ui/NguyenSelect.vue";
 import validation from "~/common/validation";
 import NguyenTextArea from "~/components/ui/NguyenTextArea.vue";
 import NguyenUploadImage from "~/components/ui/NguyenUploadImage.vue";
+import NguyenUploadFile from "~/components/ui/NguyenUploadFile.vue";
 
 
 const headersFixed = [
@@ -349,6 +350,7 @@ const itemsChapter = [
             (value) => validation.required(value, 'Tên truyện')
           ]"
             ></nguyen-text-field>
+            <nguyen-upload-file></nguyen-upload-file>
           </div>
           <div style="margin-left: 200px">
             <nguyen-upload-image
