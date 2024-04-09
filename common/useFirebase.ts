@@ -1,15 +1,15 @@
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytesResumable } from "@firebase/storage";
 
 interface UseFirebase {
-  handleUploadFile: (file: File) => Promise<string | null>;
+  handleUploadFile: (folderUpload: string, file: File) => Promise<string | null>;
   handleDeleteFile: (file: string) => void;
 }
 
 const UseFirebase: UseFirebase = {
-  handleUploadFile: (file: File): Promise<string | null> => {
+  handleUploadFile: (folderUpload: string, file: File): Promise<string | null> => {
     return new Promise((resolve, reject) => {
       const storage = getStorage();
-      const storageRef = ref(storage, 'images/' + file.name);
+      const storageRef = ref(storage, `${folderUpload}/` + file.name);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
       uploadTask.on('state_changed',

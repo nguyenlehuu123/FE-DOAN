@@ -6,6 +6,7 @@ import validation from "~/common/validation";
 import NguyenTextArea from "~/components/ui/NguyenTextArea.vue";
 import NguyenUploadImage from "~/components/ui/NguyenUploadImage.vue";
 import NguyenUploadFile from "~/components/ui/NguyenUploadFile.vue";
+import NguyenDatePicker from "~/components/ui/NguyenDatePicker.vue";
 
 
 const headersFixed = [
@@ -88,15 +89,7 @@ const headersChapter = [
     title: 'Chapter',
     align: 'center',
     sortable: true,
-    width: '15%',
-    fixed: true
-  },
-  {
-    key: 'author',
-    title: 'Author',
-    align: 'center',
-    sortable: true,
-    width: '30%',
+    width: '20%',
     fixed: true
   },
   {
@@ -104,7 +97,7 @@ const headersChapter = [
     title: 'Date Submitted',
     align: 'center',
     sortable: true,
-    width: '25%',
+    width: '30%',
     fixed: true
   },
   {
@@ -118,6 +111,22 @@ const headersChapter = [
   {
     key: 'status',
     title: 'Status',
+    align: 'center',
+    sortable: false,
+    width: '10%',
+    fixed: true
+  },
+  {
+    key: 'edit',
+    title: 'Edit',
+    align: 'center',
+    sortable: false,
+    width: '10%',
+    fixed: true
+  },
+  {
+    key: 'delete',
+    title: 'Delete',
     align: 'center',
     sortable: false,
     width: '10%',
@@ -350,12 +359,22 @@ const itemsChapter = [
             (value) => validation.required(value, 'Tên truyện')
           ]"
             ></nguyen-text-field>
-            <nguyen-upload-file></nguyen-upload-file>
+            <nguyen-date-picker
+              label="Release Date"
+              horizontal
+              :label-width="150"
+              :text-field-width="500"
+              :date-picker-width="500"
+              :rules="[
+                 (value) => validation.required(value, 'Release Date')
+              ]"
+            >
+            </nguyen-date-picker>
           </div>
           <div style="margin-left: 200px">
             <nguyen-upload-image
-              width-image="120"
-              height-image="150"
+              width-image="150"
+              height-image="180"
             ></nguyen-upload-image>
           </div>
         </div>
@@ -370,16 +389,32 @@ const itemsChapter = [
           ]"
         >
         </nguyen-text-area>
-        <div>
-          <div>
-            <input type="file" style="display: none">
-            <v-btn prepend-icon="mdi-upload" style="border: 1px #4FC3F7 dashed;" flat>Upload File</v-btn>
+        <div style="margin-top: 30px">
+          <div style="display: flex; justify-content: right; margin-bottom: 10px">
+            <v-btn
+              variant="elevated"
+              class="bg-light-green-accent-3"
+            >
+              Add Chapter
+            </v-btn>
           </div>
           <div>
             <nguyen-data-table
               :headers="headersChapter"
               :items="itemsChapter"
             >
+              <template #item.edit="{ item }">
+                <div
+                  style="cursor: pointer; display: flex; justify-content: center; align-items: center; border-radius: 1px">
+                  <v-icon icon="mdi-pencil" color="#42A5F5" style="cursor: pointer"></v-icon>
+                </div>
+              </template>
+              <template #item.delete="{ item }">
+                <div
+                  style="cursor: pointer; display: flex; justify-content: center; align-items: center; border-radius: 1px">
+                  <v-icon icon="mdi-delete" color="#E53935" style="cursor: pointer"></v-icon>
+                </div>
+              </template>
             </nguyen-data-table>
           </div>
         </div>

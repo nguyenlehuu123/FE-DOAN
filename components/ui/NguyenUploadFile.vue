@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { UseFirebase } from "~/common/useFirebase";
+
 const slots = useSlots()
 defineOptions({
   inheritAttrs: false
@@ -27,21 +29,25 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const fileInputModel = defineModel()
-const fileInputRef = ref(null)
-
+const fileInputRef = ref()
+const urlFileUpload = ref<string | null>(null)
 const handleUploadFile = () => {
   fileInputRef.value.$el.querySelector('input').click()
   fileInputRef.value.validate()
 }
-const fileInputRules = [
-  (value) => !!value || 'File is required',
-]
 
-const handleFileChange = (value) => {
-  if (!value.target.value) {
-    handleRequiredError()
-  } else {
-    clearRequiredError()
+const handleFileChange = async (value: Event) => {
+  const target = value.target as HTMLInputElement;
+  if (target.files && target.files.length > 0) {
+    if (!target.value) {
+      handleRequiredError()
+    } else {
+      if (urlFileUpload.value !== null) {
+        UseFirebase.handleDeleteFile(urlFileUpload.value)
+      }
+      urlFileUpload.value = await UseFirebase.handleUploadFile('file/chapter', target.files[0])
+      clearRequiredError()
+    }
   }
 }
 
@@ -52,6 +58,7 @@ const handleRequiredError = () => {
   fileInputRef.value.$el.getElementsByClassName('v-input__details')[0].innerText = 'File is required'
   fileInputRef.value.$el.getElementsByClassName('v-input__details')[0].style.color = 'red'
 }
+
 const clearRequiredError = () => {
   fileInputRef.value.$el.getElementsByClassName('v-field__outline')[0].style.border = '1px solid #c5c5c5'
   fileInputRef.value.$el.getElementsByClassName('v-input__details')[0].innerText = ''
@@ -61,6 +68,9 @@ const clearRequiredError = () => {
 onMounted(() => {
   fileInputRef.value.$el.getElementsByClassName('mdi-close-circle')[0].addEventListener('click', () => {
     handleRequiredError()
+    if (urlFileUpload.value !== null) {
+      UseFirebase.handleDeleteFile(urlFileUpload.value)
+    }
   })
 })
 
@@ -89,7 +99,7 @@ onMounted(() => {
           variant="outlined"
           :bg-color="props.disabled ? 'bg-disable' : ''"
           :disabled="props.disabled"
-          :rules="fileInputRules"
+          :rules="props.rules"
           @change="handleFileChange"
         >
           <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
