@@ -1,28 +1,11 @@
-import { userStore } from "~/stores/useStore";
 import { differenceInDays } from "date-fns/fp/differenceInDays";
 import { i18n } from "~/plugins/i18n";
-
-import { createPinia } from 'pinia';
-import { createApp } from 'vue'
-import App from '~/app.vue'
-
-const pinia = createPinia()
-const app = createApp(App)
-app.use(pinia)
-app.mount('#app')
-
+import { getTokenFromCookie } from "~/common/cookie";
 
 interface IHeaders {
-  'Cache-Control': string;
-  Pragma: string;
-  Expires: string;
-  'X-CmdId': string;
-  Authorization: string;
-  'Accept-Language': string;
-  'Content-Type': string;
+  [header: string]: string;
 }
 
-const useStoreLocal = userStore()
 
 const configHeaderApi = (data: number | string | object | null): IHeaders => {
   const headers: IHeaders = {
@@ -30,7 +13,7 @@ const configHeaderApi = (data: number | string | object | null): IHeaders => {
     Pragma: 'no-cache',
     Expires: '0',
     'X-CmdId': '',
-    Authorization: useStoreLocal.getAuthorization ? useStoreLocal.getAuthorization : '',
+    Authorization: getTokenFromCookie() ?? '',
     'Accept-Language': 'en,vi;q=0.8,en;q=0.9',
     'Content-Type': 'application/json'
   };

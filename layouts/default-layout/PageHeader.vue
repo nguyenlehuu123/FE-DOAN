@@ -6,6 +6,7 @@ import { useI18n } from "vue-i18n";
 import { matchSorter } from 'match-sorter'
 import homeRepository from "~/repositories/master/homeRepository";
 import loginRepository from "~/repositories/master/loginRepository";
+import { removeTokenFromCookie } from "~/common/cookie";
 
 interface OptionHeaderI {
   optionHeaderId: number,
@@ -55,6 +56,7 @@ const handleLogout = () => {
       userStoreLocal.updateUserInfo({})
       userStoreLocal.updateAuthorization('')
       userStoreLocal.updateUserRole('')
+      removeTokenFromCookie()
       navigateTo('/home')
     })
 }

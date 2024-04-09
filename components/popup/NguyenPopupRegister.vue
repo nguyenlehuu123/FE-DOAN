@@ -8,6 +8,7 @@ import { userStore } from "~/stores/useStore";
 import sendEmailRepository from "~/repositories/master/sendEmailRepository";
 import loginRepository from "~/repositories/master/loginRepository";
 import { useI18n } from "vue-i18n";
+import { saveTokenToCookie } from "~/common/cookie";
 
 const showDialog = showDialogStore()
 const toggleEyePassword = ref<boolean>(false)
@@ -52,6 +53,7 @@ const handleRegister = async () => {
         avatar: registerResponse.avatar
       })
       showDialog.handleToggleShowDialogRegister()
+      saveTokenToCookie(registerResponse.accessToken)
     })
 }
 

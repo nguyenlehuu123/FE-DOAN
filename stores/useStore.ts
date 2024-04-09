@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { getTokenFromCookie } from "~/common/cookie";
 
 interface IUserInfo {
   avatar?: string,
@@ -10,7 +11,7 @@ export const userStore = defineStore('useStore', {
     return {
       useRole: '',
       userInfo: {},
-      authorization: ''
+      authorization: getTokenFromCookie() ? getTokenFromCookie() : ''
     }
   },
   getters: {

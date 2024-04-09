@@ -7,6 +7,7 @@ import { showDialogStore } from "~/stores/showDialogStore";
 import { userStore } from "~/stores/useStore";
 import loginRepository from "~/repositories/master/loginRepository";
 import { useI18n } from "vue-i18n";
+import { saveTokenToCookie } from "~/common/cookie";
 
 const showDialog = showDialogStore()
 const userStoreLocal = userStore()
@@ -14,7 +15,7 @@ const userStoreLocal = userStore()
 const toggleEye = ref<boolean>(false)
 const email = ref<string>('')
 const password = ref<string>('')
-const form = ref(null)
+const form = ref()
 const i18n = useI18n()
 
 interface ILoginResponse {
@@ -55,6 +56,7 @@ const login = async () => {
       avatar: loginResponse.avatar
     })
     handleShowDialogLogin()
+    saveTokenToCookie(loginResponse.accessToken)
   })
     .catch((error) => {
       // TODO
