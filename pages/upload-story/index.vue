@@ -5,9 +5,13 @@ import NguyenSelect from "~/components/ui/NguyenSelect.vue";
 import validation from "~/common/validation";
 import NguyenTextArea from "~/components/ui/NguyenTextArea.vue";
 import NguyenUploadImage from "~/components/ui/NguyenUploadImage.vue";
-import NguyenUploadFile from "~/components/ui/NguyenUploadFile.vue";
 import NguyenDatePicker from "~/components/ui/NguyenDatePicker.vue";
-
+import NguyenFooter from "~/components/ui/NguyenFooter.vue";
+import uploadStoryRepository from "~/repositories/master/uploadStoryRepository";
+import mangaDetailRepository from "~/repositories/master/mangaDetailRepository";
+import { useI18n } from "vue-i18n";
+import { DateHelper } from "~/common/helper";
+import { showDialogStore } from "~/stores/showDialogStore";
 
 const headersFixed = [
   {
@@ -15,7 +19,7 @@ const headersFixed = [
     title: 'No',
     align: 'center',
     sortable: true,
-    width: '2%',
+    width: '5%',
     fixed: true
   },
   {
@@ -23,15 +27,15 @@ const headersFixed = [
     title: 'storyName',
     align: 'center',
     sortable: true,
-    width: '20%',
+    width: '25%',
     fixed: true
   },
   {
-    key: 'nameAuthor',
+    key: 'authorName',
     title: 'Name Author',
     align: 'center',
     sortable: true,
-    width: '18%',
+    width: '20%',
     fixed: true
   },
   {
@@ -43,7 +47,7 @@ const headersFixed = [
     fixed: true
   },
   {
-    key: 'like',
+    key: 'likeNumber',
     title: 'Like',
     align: 'center',
     sortable: true,
@@ -51,15 +55,7 @@ const headersFixed = [
     fixed: true
   },
   {
-    key: 'dislike',
-    title: 'Dislike',
-    align: 'center',
-    sortable: true,
-    width: '10%',
-    fixed: true
-  },
-  {
-    key: 'follow',
+    key: 'followNumber',
     title: 'Follow',
     align: 'center',
     sortable: true,
@@ -134,113 +130,6 @@ const headersChapter = [
   }
 ]
 
-const items = [
-  {
-    no: 1,
-    storyName: 'Chapter1',
-    nameAuthor: 'Chapter1',
-    dateSubmitted: '10/10/2022',
-    like: 100,
-    dislike: 100,
-    follow: 100,
-    rating: 2
-  },
-  {
-    no: 2,
-    storyName: 'Chapter1',
-    nameAuthor: 'Chapter1',
-    dateSubmitted: '10/10/2022',
-    like: 100,
-    dislike: 100,
-    follow: 100,
-    rating: 3
-  },
-  {
-    no: 3,
-    storyName: 'Chapter1',
-    nameAuthor: 'Chapter1',
-    dateSubmitted: '10/10/2022',
-    like: 100,
-    dislike: 100,
-    follow: 100,
-    rating: 4
-  },
-  {
-    no: 4,
-    storyName: 'Chapter1',
-    nameAuthor: 'Chapter1',
-    dateSubmitted: '10/10/2022',
-    like: 100,
-    dislike: 100,
-    follow: 100,
-    rating: 5
-  },
-  {
-    no: 5,
-    storyName: 'Chapter1',
-    nameAuthor: 'Chapter1',
-    dateSubmitted: '10/10/2022',
-    like: 100,
-    dislike: 100,
-    follow: 100,
-    rating: 2
-  },
-  {
-    no: 6,
-    storyName: 'Chapter1',
-    nameAuthor: 'Chapter1',
-    dateSubmitted: '10/10/2022',
-    like: 100,
-    dislike: 100,
-    follow: 100,
-    rating: 3
-  },
-  {
-    no: 7,
-    storyName: 'Chapter1',
-    nameAuthor: 'Chapter1',
-    dateSubmitted: '10/10/2022',
-    like: 100,
-    dislike: 100,
-    follow: 100,
-    rating: 1
-  }
-]
-const itemsSelect = [
-  {
-    text: 'Item 1',
-    key: 'item1'
-  },
-  {
-    text: 'Item 2',
-    key: 'item2'
-  },
-  {
-    text: 'Item 3',
-    key: 'item3'
-  },
-  {
-    text: 'Item 4',
-    key: 'item4'
-  },
-  {
-    text: 'Item 5',
-    key: 'item5'
-  },
-  {
-    text: 'Item 6',
-    key: 'item6'
-  },
-  {
-    text: 'Item 7',
-    key: 'item7'
-  },
-  {
-    text: 'Item 7',
-    key: 'item7'
-  }
-]
-
 const itemsChapter = [
   {
     chapter: 'Chapter1',
@@ -272,38 +161,209 @@ const itemsChapter = [
   }
 ]
 
+
+interface IStory {
+  createTimestamp: string;
+  creator: string;
+  deleteFlg: number;
+  description: string;
+  followNumber: number;
+  image: string;
+  releaseDate: string,
+  likeNumber: number;
+  status: number;
+  storyName: string;
+  storyId: number;
+  updateTimestamp: string;
+  updater: string;
+  versionNo: number;
+  authorEntities: IAuthor[],
+  chapterEntities: IChapterData[],
+  storyGenreEntity: IStoryGenreSelect
+}
+
+interface IAuthor {
+  authorId: number;
+  name: string;
+  pseudonym: string;
+  email: string;
+  address: string;
+  phone: string;
+}
+
+interface IChapterData {
+  creator: string;
+  createTimestamp: string;
+  updater: string;
+  updateTimestamp: string;
+  versionNo: number;
+  deleteFlg: number;
+  chapterId: number;
+  viewNumber: number;
+  statusKey: number;
+  chapterNumber: number;
+  releaseDate: string;
+}
+
+
+interface ISearchConditionGroup {
+  storyName: string
+  authorName: string
+}
+
+interface IStoryGenreSelect {
+  storyGenreId: number
+  storyGenreName: string
+}
+
+interface IStoryTable {
+  "no"?: number,
+  "storyId": number,
+  "storyName": string,
+  "authorName": string[] | string,
+  "dateSubmitted": string,
+  "likeNumber": number,
+  "followNumber": number,
+  "rating": number
+}
+
+interface IAuthorSelect {
+  authorId: string,
+  authorName: string
+}
+
+interface IStoryDetail extends IStoryInfo {
+  authorIds?: number[],
+  chaptersAdd: IChapterAdd[]
+}
+
+interface IChapterAdd {
+  chapterNumber: number | null;
+  statusKey: number | null;
+  releaseDate: string;
+  urlFile: string;
+  fileName: string;
+}
+
+interface IStoryInfo {
+  storyName: string,
+  releaseDate: string,
+  description: string,
+  image: string,
+  storyGenreId: number | null,
+}
+
+const VIEW_MODE = 1
+const ADD_MODE = 2
+const EDIT_MODE = 3
+
+const searchConditionForm = ref()
+const formAddStoryRef = ref()
+const searchConditionGroup = ref<ISearchConditionGroup>({
+  storyName: '',
+  authorName: ''
+})
+const i18n = useI18n()
+const showDialogLocal = showDialogStore()
+const items = ref<IStoryTable[] | null>(null)
+const authorSelect = ref<IAuthorSelect[] | null>(null)
+const storyGenreSelect = ref<IStoryGenreSelect[] | null>(null)
+const mode = ref(VIEW_MODE)
+const authorIdModel = ref<number[]>([])
+const chapterAddModel = ref<IChapterAdd[]>([])
+const storyInfoModel = ref<IStoryInfo>({
+  storyName: '',
+  releaseDate: '',
+  description: '',
+  image: '',
+  storyGenreId: null
+})
+
+const handleSearchStory = () => {
+  const request = {
+    storyName: searchConditionGroup.value.storyName,
+    nameAuthor: searchConditionGroup.value.authorName
+  }
+  const langCodes = {
+    404: i18n.t('message.000010')
+  }
+
+  uploadStoryRepository.searchConditionStory(request, langCodes)
+    .then((response: any) => {
+      items.value = response as IStoryTable[]
+      for (let i = 0; i < response.length; i++) {
+        items.value[i].no = i + 1
+        items.value[i].dateSubmitted = DateHelper.formatDateMMDDYYYY(response[i].dateSubmitted)
+        items.value[i].authorName = response[i].authorName.join(', ')
+      }
+    })
+}
+
+const handleClickAddStory = () => {
+  mode.value = ADD_MODE
+  Promise.all([
+    uploadStoryRepository.getAllAuthorSelect(),
+    uploadStoryRepository.getAllStoryGenre()
+  ])
+    .then((response) => {
+      authorSelect.value = response[0] as IAuthorSelect[]
+      storyGenreSelect.value = response[1] as IStoryGenreSelect[]
+    })
+}
+
+const handleEditStory = (storyId: number) => {
+  mode.value = EDIT_MODE
+  mangaDetailRepository.getMangaDetail(storyId)
+    .then(response => {
+      console.log(response)
+    })
+}
+
+const handleAddChapter = () => {
+  showDialogLocal.handleToggleShowDialogRegisterChapter()
+}
+
 </script>
 <template>
-  <div>
+  <div style="margin-bottom: 50px">
     <div class="my-2">
       <v-icon icon="mdi-magnify"></v-icon>
       <span>Search truyện</span>
     </div>
     <v-divider class="mb-6"></v-divider>
     <div>
-      <nguyen-text-field
-        label="Tên truyện"
-        density="compact"
-        :text-field-width="500"
-        :horizontal="true"
-        width="36"
-      ></nguyen-text-field>
-      <nguyen-text-field
-        label="Tên tác giả"
-        density="compact"
-        :text-field-width="500"
-        :horizontal="true"
-        width="36"
-      ></nguyen-text-field>
-      <div class="d-flex justify-center mb-12 mt-6">
-        <v-btn style="background-color: #43A047; width: 140px">
-          Search
-        </v-btn>
-      </div>
+      <v-form
+        ref="searchConditionForm"
+      >
+        <nguyen-text-field
+          v-model.trim="searchConditionGroup.storyName"
+          label="Tên truyện"
+          density="compact"
+          width="36"
+          :text-field-width="500"
+          :horizontal="true"
+        ></nguyen-text-field>
+        <nguyen-text-field
+          v-model.trim="searchConditionGroup.authorName"
+          label="Tên tác giả"
+          density="compact"
+          width="36"
+          :text-field-width="500"
+          :horizontal="true"
+        ></nguyen-text-field>
+        <div class="d-flex justify-center mb-12 mt-6">
+          <v-btn
+            style="background-color: #43A047; width: 140px"
+            @click="handleSearchStory"
+          >
+            Search
+          </v-btn>
+        </div>
+      </v-form>
       <nguyen-data-table
         :headers="headersFixed"
         :height="400"
-        :items="items"
+        :items="items ?? []"
       >
         <template #item.rating="{ item }">
           <div style="display: flex; justify-content: center; align-items: center">
@@ -319,13 +379,18 @@ const itemsChapter = [
         <template #item.edit="{ item }">
           <div
             style="cursor: pointer; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; border-radius: 1px"
-            class="edit-story-icon">
+            class="edit-story-icon"
+            @click="() => handleEditStory(item?.storyId)"
+          >
             <v-icon icon="mdi-pencil"></v-icon>
           </div>
         </template>
       </nguyen-data-table>
       <div class="d-flex justify-end mt-8 mb-8">
-        <v-btn class="bg-light-blue-lighten-1">
+        <v-btn
+          class="bg-light-blue-lighten-1"
+          @click="handleClickAddStory"
+        >
           Add story
         </v-btn>
       </div>
@@ -333,67 +398,98 @@ const itemsChapter = [
 
       <!--      add story-->
       <div>
-        <div style="display: flex">
-          <div>
-            <nguyen-select
-              label-select="Tên tác giả"
-              density="compact"
-              width="500px"
-              item-title="text"
-              item-value="key"
-              :items="itemsSelect"
-              :multiple="true"
-              :text-field-width="500"
-              :horizontal="true"
-              :rules="[
-            (value) => validation.required(value, 'Tên tác giả')
-          ]"
-            ></nguyen-select>
-            <nguyen-text-field
-              label="Tên truyện"
-              density="compact"
-              width="36"
-              :text-field-width="500"
-              :horizontal="true"
-              :rules="[
-            (value) => validation.required(value, 'Tên truyện')
-          ]"
-            ></nguyen-text-field>
-            <nguyen-date-picker
-              label="Release Date"
-              horizontal
-              :label-width="150"
-              :text-field-width="500"
-              :date-picker-width="500"
-              :rules="[
+        <v-form
+          ref="formAddStoryRef"
+        >
+          <div style="display: flex">
+            <div>
+              <nguyen-select
+                v-model="authorIdModel"
+                label-select="Tên tác giả"
+                density="compact"
+                width="500px"
+                item-title="authorName"
+                item-value="authorId"
+                :disabled="mode == VIEW_MODE"
+                :items="authorSelect ?? []"
+                :multiple="true"
+                :text-field-width="500"
+                :horizontal="true"
+                :rules="[
+                  (value) => validation.required(value, 'Tên tác giả')
+                ]"
+              ></nguyen-select>
+              <nguyen-text-field
+                v-model.trim="storyInfoModel.storyName"
+                label="Tên truyện"
+                density="compact"
+                width="36"
+                :disabled="mode == VIEW_MODE"
+                :text-field-width="500"
+                :horizontal="true"
+                :rules="[
+                  (value) => validation.required(value, 'Tên truyện')
+                ]"
+              ></nguyen-text-field>
+              <nguyen-date-picker
+                v-model.trim="storyInfoModel.releaseDate"
+                label="Release Date"
+                horizontal
+                :disabled="mode == VIEW_MODE"
+                :label-width="150"
+                :text-field-width="500"
+                :date-picker-width="500"
+                :rules="[
                  (value) => validation.required(value, 'Release Date')
-              ]"
-            >
-            </nguyen-date-picker>
+                ]"
+              >
+              </nguyen-date-picker>
+              <nguyen-select
+                v-model="storyInfoModel.storyGenreId"
+                label-select="Thể loại"
+                density="compact"
+                width="500px"
+                item-title="storyGenreName"
+                item-value="storyGenreId"
+                :disabled="mode == VIEW_MODE"
+                :items="storyGenreSelect ?? []"
+                :text-field-width="500"
+                :horizontal="true"
+                :rules="[
+                  (value) => validation.required(value, 'Thể loại')
+                ]"
+              ></nguyen-select>
+            </div>
+            <div style="margin-left: 200px">
+              <nguyen-upload-image
+                @save:image="storyInfoModel.image = $event"
+                width-image="150"
+                height-image="180"
+                :disabled="mode == VIEW_MODE"
+              ></nguyen-upload-image>
+            </div>
           </div>
-          <div style="margin-left: 200px">
-            <nguyen-upload-image
-              width-image="150"
-              height-image="180"
-            ></nguyen-upload-image>
-          </div>
-        </div>
-        <nguyen-text-area
-          label="Mô tả truyện"
-          :rows="4"
-          :max-length="2000"
-          :rules="[
+          <nguyen-text-area
+            v-model.trim="storyInfoModel.description"
+            label="Mô tả truyện"
+            :disabled="mode == VIEW_MODE"
+            :rows="4"
+            :max-length="2000"
+            :rules="[
             (value) => validation.required(value, 'Mô tả truyện'),
             (value) => validation.lengthMax(value, 2000, 'Mô tả truyện'),
             (value) => validation.lengthMin(value, 100, 'Mô tả truyện')
           ]"
-        >
-        </nguyen-text-area>
+          >
+          </nguyen-text-area>
+        </v-form>
         <div style="margin-top: 30px">
           <div style="display: flex; justify-content: right; margin-bottom: 10px">
             <v-btn
               variant="elevated"
               class="bg-light-green-accent-3"
+              :disabled="mode == VIEW_MODE"
+              @click="handleAddChapter"
             >
               Add Chapter
             </v-btn>
@@ -401,7 +497,7 @@ const itemsChapter = [
           <div>
             <nguyen-data-table
               :headers="headersChapter"
-              :items="itemsChapter"
+              :items="chapterAddModel"
             >
               <template #item.edit="{ item }">
                 <div
@@ -420,6 +516,39 @@ const itemsChapter = [
         </div>
       </div>
     </div>
+    <nguyen-footer class="w-100 d-flex justify-center align-center"
+                   style="background-color: rgba(0, 0, 0, 0.3); height: 50px; position: fixed; bottom: 0; z-index: 200; left: 0;">
+      <div class="d-flex align-center justify-center flex-row">
+        <v-btn
+          height="36"
+          width="140"
+          color="error"
+          variant="flat"
+          class="mx-1"
+        >
+          <template #prepend>
+            <v-icon :color="'white'">
+              mdi-close-circle
+            </v-icon>
+          </template>
+          <span class="text-white">CANCEL</span>
+        </v-btn>
+        <v-btn
+          height="36"
+          width="140"
+          color="success"
+          variant="flat"
+          class="mx-1"
+        >
+          <template #prepend>
+            <v-icon :color="'white'">
+              mdi-check-circle
+            </v-icon>
+          </template>
+          <span class="text-white">REGIST</span>
+        </v-btn>
+      </div>
+    </nguyen-footer>
   </div>
 </template>
 

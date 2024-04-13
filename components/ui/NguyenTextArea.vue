@@ -45,6 +45,7 @@ const props = withDefaults(defineProps<Props>(), {
         variant="outlined"
         rounded="0"
         :disabled="props.disabled"
+        :bg-color="props.disabled ? 'bg-disable' : ''"
         :rows="props.rows"
         :maxlength="props.maxLength"
         :rules="props.maxLength ? [

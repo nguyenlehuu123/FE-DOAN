@@ -38,7 +38,7 @@ const DateHelper = {
     const today = new Date()
     return differenceInDays(beforeDate, today)
   },
-  formatDateMMDDYYYY: (isoDateString: string) => {
+  formatDateMMDDYYYY: (isoDateString: string): string => {
     const date = new Date(isoDateString)
 
     // Lấy thông tin ngày, tháng và năm từ đối tượng Date

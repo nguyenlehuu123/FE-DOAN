@@ -7,6 +7,10 @@ defineOptions({
   inheritAttrs: false
 })
 
+const emit = defineEmits<{
+  (e: 'upload-image', storyImage: string): void
+}>()
+
 interface Props {
   widthImage: string | number
   heightImage: string | number
@@ -26,6 +30,7 @@ const handleSelectFile = async (event: any) => {
   }
   selectedFile.value = event.target.files[0];
   urlFileUpload.value = await UseFirebase.handleUploadFile('images', selectedFile.value)
+  emit('upload-image', urlFileUpload.value as string)
 };
 
 const handleUploadImage = () => {

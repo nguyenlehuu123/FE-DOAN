@@ -4,7 +4,7 @@ export const showDialogStore = defineStore('showDialog', {
   state: () => ({
     showDialogLogin: false,
     showDialogRegister: false,
-    showDialogRegisterChapter: true
+    showDialogRegisterChapter: false
   }),
   getters: {
     isShowDialogLogin: (state) => state.showDialogLogin,

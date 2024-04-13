@@ -29,6 +29,9 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const fileInputModel = defineModel()
+const emit = defineEmits<{
+  (event: 'upload:file', urlFileUpload: string): void
+}>()
 const fileInputRef = ref()
 const urlFileUpload = ref<string | null>(null)
 const handleUploadFile = () => {
@@ -44,6 +47,7 @@ const handleFileChange = async (value: Event) => {
     } else {
       if (urlFileUpload.value !== null) {
         UseFirebase.handleDeleteFile(urlFileUpload.value)
+        emit('upload:file', urlFileUpload.value)
       }
       urlFileUpload.value = await UseFirebase.handleUploadFile('file/chapter', target.files[0])
       clearRequiredError()

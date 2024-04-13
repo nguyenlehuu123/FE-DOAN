@@ -3,6 +3,7 @@ import type { AxiosInstance } from 'axios';
 import Properties from '@/common/properties'
 import { configHeaderApi } from '@/common/helper'
 import Toast from '@/common/toast'
+import { dialogHttpStore } from "~/stores/dialogHttpStore";
 
 let instance: AxiosInstance | null = null;
 type TServerLink = string | undefined
@@ -33,6 +34,7 @@ const GET = (url: string, params: object, showToast: boolean, showDialog: boolea
       })
       .catch((error) => {
         // TODO
+        checkError(error, showToast, showDialog, langCodes)
         rejected(error)
       })
       .finally(() => {
@@ -67,7 +69,7 @@ const POST = (url: string, data: number | string | object, showToast: boolean, s
 }
 
 
-const PUT = (url: string, data: number | string, langCodes: ErrorCodeMap) => {
+const PUT = (url: string, data: number | string, showToast: boolean, showDialog: boolean, langCodes: ErrorCodeMap) => {
   const serverLink: TServerLink = Properties().SERVER_LINK as TServerLink
   if (!instance) {
     instance = axios.create({
@@ -85,6 +87,7 @@ const PUT = (url: string, data: number | string, langCodes: ErrorCodeMap) => {
     })
       .catch((error) => {
         // TODO
+        checkError(error, showToast, showDialog, langCodes)
         rejected(error)
       })
       .finally(() => {
@@ -164,16 +167,37 @@ const DOWNLOAD = (url: string, params: object) => {
 
 const checkError = (error: any, showToast: boolean, showDialog: boolean, langCodes: ErrorCodeMap) => {
   if (error.response) {
+    if (error.response.data) {
+      const errorCode = error.response.data.errorCode
+      if (langCodes && langCodes[errorCode]) {
+        error.response.data.messageErrorCode = langCodes
+        error.response.data.message = langCodes[errorCode]
+      }
 
-  }
-  if (error.response.data) {
-    const errorCode = error.response.data.errorCode
-    if (langCodes && langCodes[errorCode]) {
-      error.response.data.messageErrorCode = langCodes
-      error.response.data.message = langCodes[errorCode]
+      handleErrorDialog(error.response, showDialog)
+      handleToast(error.response, showToast)
     }
+  } else {
+    handleErrorDialog(error.response, showDialog)
+  }
+}
 
-    handleToast(error.response, showToast)
+function handleErrorDialog(resError: any, showDialog: boolean) {
+  const dialogHttpLocal = dialogHttpStore()
+  if (resError !== undefined && showDialog) {
+    dialogHttpLocal.setShow(true)
+    let message = ''
+    const message_error_code = resError.data.messageErrorCode?.[resError.data.errorCode].split(/<br>/i) ?? null
+    if (message_error_code) {
+      for (const element of message_error_code) {
+        message += element + '\n'
+      }
+    } else {
+      for (const element of resError.data.errorMessages) {
+        message += element.message + '\n'
+      }
+    }
+    dialogHttpLocal.setContent(message)
   }
 }
 

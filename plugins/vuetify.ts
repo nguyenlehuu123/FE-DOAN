@@ -21,7 +21,8 @@ const myCustomLightTheme: ThemeDefinition = {
     success: '#4CAF50',
     warning: '#FB8C00',
     something: "#4A148C",
-    'color-text': '#333'
+    'color-text': '#333',
+    'bg-disable': '#f5f5f5'
   },
 }
 
@@ -38,7 +39,8 @@ const myCustomDarkTheme: ThemeDefinition = {
     success: '#4CAF50',
     warning: '#FB8C00',
     something: "#B71C1C333",
-    'color-text': '#fff'
+    'color-text': '#fff',
+    'bg-disable': '#f5f5f5'
   },
 }
 

@@ -11,7 +11,7 @@ export const userStore = defineStore('useStore', {
     return {
       useRole: '',
       userInfo: {},
-      authorization: getTokenFromCookie() ? getTokenFromCookie() : ''
+      authorization: getTokenFromCookie() ?? ''
     }
   },
   getters: {

@@ -78,6 +78,8 @@ const login = async () => {
     top="50%"
     left="50%"
     style="z-index: 9999"
+    @click:outside="showDialog.handleToggleShowDialogLogin"
+    @keydown.esc="showDialog.handleToggleShowDialogLogin"
   >
     <v-card
       flat

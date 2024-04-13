@@ -8,9 +8,59 @@ import NguyenUploadFile from "~/components/ui/NguyenUploadFile.vue";
 import NguyenAddChapterItem from "~/components/ui/NguyenAddChapterItem.vue";
 
 const showDialog = showDialogStore()
-const form = ref(null)
-const chapterNumber = ref<number | null>(null)
-const itemsStatus = ['Đang khóa', 'Đang mở']
+const form = ref()
+const itemsStatus = [{
+  statusKey: 1,
+  statusName: 'Khoá'
+},
+  {
+    statusKey: 2,
+    statusName: 'Mở khoá'
+  }]
+
+interface IChapterAdd {
+  chapterNumber: number | null;
+  statusKey: number | null;
+  releaseDate: string;
+  urlFile: string;
+  fileName: string;
+}
+
+const chapterAddModel = ref<IChapterAdd[]>([])
+const chapterAddItem = ref<IChapterAdd>({
+  chapterNumber: null,
+  statusKey: null,
+  releaseDate: '',
+  urlFile: '',
+  fileName: ''
+})
+
+const handleClickCancel = () => {
+  showDialog.handleToggleShowDialogRegisterChapter()
+}
+
+const clearFormData = () => {
+  chapterAddItem.value = {
+    chapterNumber: null,
+    statusKey: null,
+    releaseDate: '',
+    urlFile: '',
+    fileName: ''
+  }
+  form.value.reset()
+}
+
+const handleClickAddChapter = async () => {
+  debugger
+  const { valid } = await form.value.validate()
+  if (!valid) {
+    return
+  }
+
+  chapterAddModel.value.push(chapterAddItem.value)
+  clearFormData()
+}
+
 </script>
 
 <template>
@@ -22,6 +72,8 @@ const itemsStatus = ['Đang khóa', 'Đang mở']
     top="50%"
     left="50%"
     style="z-index: 200"
+    @click:outside="showDialog.handleToggleShowDialogRegisterChapter"
+    @keydown.esc="showDialog.handleToggleShowDialogRegisterChapter"
   >
     <v-card
       flat
@@ -33,45 +85,12 @@ const itemsStatus = ['Đang khóa', 'Đang mở']
         style="height: 340px; overflow-y: auto; overflow-x: hidden; padding: 0 40px;"
       >
         <nguyen-add-chapter-item
+          v-for="(chapter, index) in chapterAddModel"
+          :key="index"
           style="margin: 10px 0"
-          :status="1"
+          :status="chapter.statusKey"
           :width="860"
-          :chapter-number="1"
-          file-name="Cong chua va bay chu lun o trong rung.pdf"
-        ></nguyen-add-chapter-item>
-        <nguyen-add-chapter-item
-          style="margin: 10px 0"
-          :status="1"
-          :width="860"
-          :chapter-number="2"
-          file-name="Cong chua va bay chu lun o trong rung.pdf"
-        ></nguyen-add-chapter-item>
-        <nguyen-add-chapter-item
-          style="margin: 10px 0"
-          :status="2"
-          :width="860"
-          :chapter-number="3"
-          file-name="Cong chua va bay chu lun o trong rung.pdf"
-        ></nguyen-add-chapter-item>
-        <nguyen-add-chapter-item
-          style="margin: 10px 0"
-          :status="2"
-          :width="860"
-          :chapter-number="4"
-          file-name="Cong chua va bay chu lun o trong rung.pdf"
-        ></nguyen-add-chapter-item>
-        <nguyen-add-chapter-item
-          style="margin: 10px 0"
-          :status="2"
-          :width="860"
-          :chapter-number="5"
-          file-name="Cong chua va bay chu lun o trong rung.pdf"
-        ></nguyen-add-chapter-item>
-        <nguyen-add-chapter-item
-          style="margin: 10px 0"
-          :status="2"
-          :width="860"
-          :chapter-number="6"
+          :chapter-number="chapter.chapterNumber"
           file-name="Cong chua va bay chu lun o trong rung.pdf"
         ></nguyen-add-chapter-item>
       </div>
@@ -79,7 +98,7 @@ const itemsStatus = ['Đang khóa', 'Đang mở']
         <div>
           <div style="display: flex; justify-content: space-around">
             <nguyen-text-field
-              v-model="chapterNumber"
+              v-model="chapterAddItem.chapterNumber"
               label="Chapter Number"
               density="compact"
               style="border-radius: 8px"
@@ -91,6 +110,7 @@ const itemsStatus = ['Đang khóa', 'Đang mở']
             >
             </nguyen-text-field>
             <nguyen-date-picker
+              v-model="chapterAddItem.releaseDate"
               label="Release Date"
               :label-width="150"
               :text-field-width="200"
@@ -101,9 +121,12 @@ const itemsStatus = ['Đang khóa', 'Đang mở']
             >
             </nguyen-date-picker>
             <nguyen-select
+              v-model="chapterAddItem.statusKey"
               width="200px"
               label-select="Trạng thái"
               label="chọn trạng thái"
+              item-title="statusName"
+              item-value="statusKey"
               :items="itemsStatus"
               :rules="[
                   (value) => validation.required(value, 'Trạng thái')
@@ -113,6 +136,8 @@ const itemsStatus = ['Đang khóa', 'Đang mở']
           </div>
           <div style="display: flex; justify-content: center">
             <nguyen-upload-file
+              v-model="chapterAddItem.urlFile"
+              @upload:file="chapterAddItem.urlFile = $event"
               label="File Chapter"
               :label-width="150"
               :horizontal="true"
@@ -127,6 +152,7 @@ const itemsStatus = ['Đang khóa', 'Đang mở']
             <v-btn
               variant="elevated"
               class="bg-light-green-accent-3"
+              @click="handleClickAddChapter"
             >
               Add Chapter
             </v-btn>
@@ -138,11 +164,12 @@ const itemsStatus = ['Đang khóa', 'Đang mở']
               variant="elevated"
               class="bg-blue-darken-1"
             >
-              Save
+              ADD
             </v-btn>
             <v-btn
               variant="elevated"
               class="bg-red-darken-2"
+              @click="handleClickCancel"
             >
               Huỷ
             </v-btn>

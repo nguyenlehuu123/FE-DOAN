@@ -16,7 +16,7 @@ const toggleEyePasswordConfirm = ref<boolean>(false)
 const email = ref<string>('')
 const password = ref<string>('')
 const passwordConfirm = ref<string>('')
-const form = ref(null)
+const form = ref()
 const valid = ref<boolean>(false)
 const otp = ref<number | string | null>(null)
 const i18n = useI18n();
@@ -69,6 +69,8 @@ const handleRegister = async () => {
     top="50%"
     left="50%"
     style="z-index: 9999"
+    @click:outside="showDialog.handleToggleShowDialogRegister"
+    @keydown.esc="showDialog.handleToggleShowDialogRegister"
   >
     <v-card
       flat

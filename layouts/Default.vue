@@ -5,6 +5,7 @@
     <nguyen-popup-register></nguyen-popup-register>
     <nguyen-dialog-http></nguyen-dialog-http>
     <nguyen-dialog-confirm></nguyen-dialog-confirm>
+    <nguyen-popup-register-chapter></nguyen-popup-register-chapter>
     <v-main>
       <div style="max-width: 1500px; margin: auto; margin-top: -60px;">
         <nuxt-page></nuxt-page>
@@ -18,4 +19,5 @@ import NguyenPopupLogin from "~/components/popup/NguyenPopupLogin.vue";
 import NguyenPopupRegister from "~/components/popup/NguyenPopupRegister.vue";
 import NguyenDialogHttp from "~/components/ui/NguyenDialogHttp.vue";
 import NguyenDialogConfirm from "~/components/ui/NguyenDialogConfirm.vue";
+import NguyenPopupRegisterChapter from "~/components/popup/NguyenPopupRegisterChapter.vue";
 </script>
