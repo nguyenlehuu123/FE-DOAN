@@ -365,13 +365,11 @@ const handleRegistStory = () => {
     uploadStoryRepository.uploadStory(request, langCodes)
       .then(response => {
         clearFormData()
-        console.log(response)
       })
   } else if (mode.value === EDIT_MODE) {
     uploadStoryRepository.updateStory(storyEdit.value as number, request)
       .then(response => {
         clearFormData()
-        console.log(response)
       })
   }
 }

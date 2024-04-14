@@ -20,9 +20,7 @@ export const useChapterStore = defineStore('chapterStore', {
       this.chapterAddModel.push(chapterAddModel)
     },
     handleAddMultipleChapterModel(chapterAddModel: IChapterAdd[]) {
-      console.log(chapterAddModel)
       this.chapterAddModel.push(...chapterAddModel)
-      console.log(this.chapterAddModel)
     },
     handleUpdateChapterModel(index: number, chapterAddModel: IChapterAdd) {
       if (index >= 0 && index < this.chapterAddModel.length) {
