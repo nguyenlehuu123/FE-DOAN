@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { showDialogStore } from "~/stores/showDialogStore";
+import { useChapterStore } from "~/stores/chapterStore";
 import NguyenTextField from "~/components/ui/NguyenTextField.vue";
 import validation from "~/common/validation";
 import NguyenDatePicker from "~/components/ui/NguyenDatePicker.vue";
@@ -8,7 +9,9 @@ import NguyenUploadFile from "~/components/ui/NguyenUploadFile.vue";
 import NguyenAddChapterItem from "~/components/ui/NguyenAddChapterItem.vue";
 
 const showDialog = showDialogStore()
+const chapterStore = useChapterStore()
 const form = ref()
+const addChapterItemHandleRef = ref()
 const itemsStatus = [{
   statusKey: 1,
   statusName: 'Khoá'
@@ -26,7 +29,7 @@ interface IChapterAdd {
   fileName: string;
 }
 
-const chapterAddModel = ref<IChapterAdd[]>([])
+const chapterAddModel = ref<IChapterAdd[]>(chapterStore.getChapterAddModel)
 const chapterAddItem = ref<IChapterAdd>({
   chapterNumber: null,
   statusKey: null,
@@ -51,15 +54,38 @@ const clearFormData = () => {
 }
 
 const handleClickAddChapter = async () => {
-  debugger
   const { valid } = await form.value.validate()
   if (!valid) {
     return
   }
 
+  debugger
   chapterAddModel.value.push(chapterAddItem.value)
   clearFormData()
 }
+
+const handleEmittedUploadFile = (payload: {
+  urlFileUpload: string | null
+  fileName: string
+}) => {
+  chapterAddItem.value.urlFile = payload.urlFileUpload as string
+  chapterAddItem.value.fileName = payload.fileName
+}
+
+const handleClickApply = () => {
+  chapterStore.handleResetChapterModel()
+  debugger
+  chapterStore.handleAddMultipleChapterModel(chapterAddModel.value)
+  showDialog.handleToggleShowDialogRegisterChapter()
+}
+
+const handleEditChapterItem = (index: number) => {
+  chapterAddItem.value = chapterAddModel.value[index]
+}
+
+defineExpose({
+  handleEditChapterItem
+})
 
 </script>
 
@@ -85,13 +111,16 @@ const handleClickAddChapter = async () => {
         style="height: 340px; overflow-y: auto; overflow-x: hidden; padding: 0 40px;"
       >
         <nguyen-add-chapter-item
+          ref="addChapterItemHandleRef"
+          @edit-chapter-item="handleEditChapterItem"
           v-for="(chapter, index) in chapterAddModel"
           :key="index"
+          :index="index"
           style="margin: 10px 0"
           :status="chapter.statusKey"
           :width="860"
           :chapter-number="chapter.chapterNumber"
-          file-name="Cong chua va bay chu lun o trong rung.pdf"
+          :file-name="chapter.fileName"
         ></nguyen-add-chapter-item>
       </div>
       <v-form ref="form">
@@ -136,8 +165,7 @@ const handleClickAddChapter = async () => {
           </div>
           <div style="display: flex; justify-content: center">
             <nguyen-upload-file
-              v-model="chapterAddItem.urlFile"
-              @upload:file="chapterAddItem.urlFile = $event"
+              @upload-file="handleEmittedUploadFile"
               label="File Chapter"
               :label-width="150"
               :horizontal="true"
@@ -163,8 +191,9 @@ const handleClickAddChapter = async () => {
             <v-btn
               variant="elevated"
               class="bg-blue-darken-1"
+              @click="handleClickApply"
             >
-              ADD
+              Apply
             </v-btn>
             <v-btn
               variant="elevated"

@@ -17,6 +17,11 @@ interface Props {
   width: string | number
 }
 
+interface IFileUpload {
+  urlFileUpload: string | null
+  fileName: string
+}
+
 const props = withDefaults(defineProps<Props>(), {
   density: 'default',
   formatFunction: () => [],
@@ -29,11 +34,20 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const fileInputModel = defineModel()
-const emit = defineEmits<{
-  (event: 'upload:file', urlFileUpload: string): void
-}>()
+const emit = defineEmits({
+  uploadFile(payload: {
+    urlFileUpload: string | null
+    fileName: string
+  }) {
+    return true
+  }
+})
 const fileInputRef = ref()
-const urlFileUpload = ref<string | null>(null)
+const fileUpload = ref<IFileUpload>({
+  urlFileUpload: '',
+  fileName: ''
+})
+
 const handleUploadFile = () => {
   fileInputRef.value.$el.querySelector('input').click()
   fileInputRef.value.validate()
@@ -45,12 +59,13 @@ const handleFileChange = async (value: Event) => {
     if (!target.value) {
       handleRequiredError()
     } else {
-      if (urlFileUpload.value !== null) {
-        UseFirebase.handleDeleteFile(urlFileUpload.value)
-        emit('upload:file', urlFileUpload.value)
+      if (fileUpload.value.urlFileUpload !== '') {
+        UseFirebase.handleDeleteFile(fileUpload.value.urlFileUpload as string)
       }
-      urlFileUpload.value = await UseFirebase.handleUploadFile('file/chapter', target.files[0])
       clearRequiredError()
+      fileUpload.value.urlFileUpload = await UseFirebase.handleUploadFile('file/chapter', target.files[0])
+      fileUpload.value.fileName = target.files[0]?.name
+      emit('uploadFile', fileUpload.value)
     }
   }
 }
@@ -72,8 +87,8 @@ const clearRequiredError = () => {
 onMounted(() => {
   fileInputRef.value.$el.getElementsByClassName('mdi-close-circle')[0].addEventListener('click', () => {
     handleRequiredError()
-    if (urlFileUpload.value !== null) {
-      UseFirebase.handleDeleteFile(urlFileUpload.value)
+    if (fileUpload.value.urlFileUpload !== '') {
+      UseFirebase.handleDeleteFile(fileUpload.value.urlFileUpload as string)
     }
   })
 })

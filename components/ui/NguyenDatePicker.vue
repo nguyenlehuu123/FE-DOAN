@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<Props>(), {
   datePickerWidth: 500
 })
 
-const inputModel = defineModel('')
+const inputModel = defineModel()
 const dateTextField = ref()
 const datePicker = ref()
 const calendarOpen = ref<boolean>(false)

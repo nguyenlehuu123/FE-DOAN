@@ -12,6 +12,7 @@ import mangaDetailRepository from "~/repositories/master/mangaDetailRepository";
 import { useI18n } from "vue-i18n";
 import { DateHelper } from "~/common/helper";
 import { showDialogStore } from "~/stores/showDialogStore";
+import { useChapterStore } from "~/stores/chapterStore";
 
 const headersFixed = [
   {
@@ -81,7 +82,7 @@ const headersFixed = [
 ]
 const headersChapter = [
   {
-    key: 'chapter',
+    key: 'chapterNumber',
     title: 'Chapter',
     align: 'center',
     sortable: true,
@@ -89,8 +90,8 @@ const headersChapter = [
     fixed: true
   },
   {
-    key: 'dateSubmitted',
-    title: 'Date Submitted',
+    key: 'releaseDate',
+    title: 'Release Date',
     align: 'center',
     sortable: true,
     width: '30%',
@@ -105,7 +106,7 @@ const headersChapter = [
     fixed: true
   },
   {
-    key: 'status',
+    key: 'statusKey',
     title: 'Status',
     align: 'center',
     sortable: false,
@@ -129,38 +130,6 @@ const headersChapter = [
     fixed: true
   }
 ]
-
-const itemsChapter = [
-  {
-    chapter: 'Chapter1',
-    author: 'Author 1, Author 2',
-    dateSubmitted: '10/10/2022',
-    view: 100,
-    status: 0
-  },
-  {
-    chapter: 'Chapter1',
-    author: 'Author 1, Author 2',
-    dateSubmitted: '10/10/2022',
-    view: 100,
-    status: 0
-  },
-  {
-    chapter: 'Chapter1',
-    author: 'Author 1, Author 2',
-    dateSubmitted: '10/10/2022',
-    view: 100,
-    status: 0
-  },
-  {
-    chapter: 'Chapter1',
-    author: 'Author 1, Author 2',
-    dateSubmitted: '10/10/2022',
-    view: 100,
-    status: 0
-  }
-]
-
 
 interface IStory {
   createTimestamp: string;
@@ -201,6 +170,8 @@ interface IChapterData {
   chapterId: number;
   viewNumber: number;
   statusKey: number;
+  urlFile: string,
+  fileName: string,
   chapterNumber: number;
   releaseDate: string;
 }
@@ -265,12 +236,16 @@ const searchConditionGroup = ref<ISearchConditionGroup>({
 })
 const i18n = useI18n()
 const showDialogLocal = showDialogStore()
+const chapterStore = useChapterStore()
 const items = ref<IStoryTable[] | null>(null)
 const authorSelect = ref<IAuthorSelect[] | null>(null)
 const storyGenreSelect = ref<IStoryGenreSelect[] | null>(null)
 const mode = ref(VIEW_MODE)
 const authorIdModel = ref<number[]>([])
-const chapterAddModel = ref<IChapterAdd[]>([])
+const chapterAddModel = ref<IChapterAdd[]>(chapterStore.getChapterAddModel)
+watch(() => chapterStore.getChapterAddModel, (value) => {
+  chapterAddModel.value = value
+})
 const storyInfoModel = ref<IStoryInfo>({
   storyName: '',
   releaseDate: '',
@@ -278,6 +253,7 @@ const storyInfoModel = ref<IStoryInfo>({
   image: '',
   storyGenreId: null
 })
+const storyEdit = ref<number | null>(null)
 
 const handleSearchStory = () => {
   const request = {
@@ -301,6 +277,11 @@ const handleSearchStory = () => {
 
 const handleClickAddStory = () => {
   mode.value = ADD_MODE
+  clearFormData()
+  getAuthorSelectAndStoryGenreSelect()
+}
+
+const getAuthorSelectAndStoryGenreSelect = () => {
   Promise.all([
     uploadStoryRepository.getAllAuthorSelect(),
     uploadStoryRepository.getAllStoryGenre()
@@ -313,15 +294,88 @@ const handleClickAddStory = () => {
 
 const handleEditStory = (storyId: number) => {
   mode.value = EDIT_MODE
+  storyEdit.value = storyId
+  getAuthorSelectAndStoryGenreSelect()
   mangaDetailRepository.getMangaDetail(storyId)
-    .then(response => {
-      console.log(response)
+    .then((response: unknown) => {
+      const story = response as IStory;
+      authorIdModel.value = story.authorEntities.map((author: IAuthor) => author.authorId)
+      storyInfoModel.value = {
+        storyName: story.storyName,
+        releaseDate: DateHelper.formatDateMMDDYYYY(story.releaseDate),
+        description: story.description,
+        image: story.image,
+        storyGenreId: story.storyGenreEntity.storyGenreId
+      }
+      chapterAddModel.value = story.chapterEntities.map((chapter: IChapterData) => {
+        return {
+          chapterNumber: chapter.chapterNumber,
+          statusKey: chapter.statusKey,
+          releaseDate: DateHelper.formatDateMMDDYYYY(chapter.releaseDate),
+          urlFile: chapter.urlFile,
+          fileName: chapter.fileName
+        }
+      })
     })
 }
 
 const handleAddChapter = () => {
+  chapterStore.handleAddMultipleChapterModel(chapterAddModel.value)
   showDialogLocal.handleToggleShowDialogRegisterChapter()
 }
+
+const handleEditChapterItem = (index: number) => {
+  showDialogLocal.handleToggleShowDialogRegisterChapter()
+
+}
+
+function buildRequestStory(): IStoryDetail {
+  return {
+    storyName: storyInfoModel.value.storyName,
+    releaseDate: storyInfoModel.value.releaseDate,
+    description: storyInfoModel.value.description,
+    image: storyInfoModel.value.image,
+    storyGenreId: storyInfoModel.value.storyGenreId,
+    authorIds: authorIdModel.value,
+    chaptersAdd: chapterAddModel.value
+  }
+}
+
+function clearFormData() {
+  storyInfoModel.value = {
+    storyName: '',
+    releaseDate: '',
+    description: '',
+    image: '',
+    storyGenreId: null
+  }
+  authorIdModel.value = []
+  chapterAddModel.value = []
+  chapterStore.handleResetChapterModel()
+  formAddStoryRef.value.reset()
+}
+
+const handleRegistStory = () => {
+  let request = buildRequestStory()
+  if (mode.value === ADD_MODE) {
+    const langCodes = {
+      404: i18n.t('message.000011', ['Thể loại']),
+      405: i18n.t('message.000011', ['Tác giả']),
+    }
+    uploadStoryRepository.uploadStory(request, langCodes)
+      .then(response => {
+        clearFormData()
+        console.log(response)
+      })
+  } else if (mode.value === EDIT_MODE) {
+    uploadStoryRepository.updateStory(storyEdit.value as number, request)
+      .then(response => {
+        clearFormData()
+        console.log(response)
+      })
+  }
+}
+
 
 </script>
 <template>
@@ -462,7 +516,7 @@ const handleAddChapter = () => {
             </div>
             <div style="margin-left: 200px">
               <nguyen-upload-image
-                @save:image="storyInfoModel.image = $event"
+                @upload-image="storyInfoModel.image = $event"
                 width-image="150"
                 height-image="180"
                 :disabled="mode == VIEW_MODE"
@@ -499,9 +553,11 @@ const handleAddChapter = () => {
               :headers="headersChapter"
               :items="chapterAddModel"
             >
-              <template #item.edit="{ item }">
+              <template #item.edit="{ item, index }">
                 <div
-                  style="cursor: pointer; display: flex; justify-content: center; align-items: center; border-radius: 1px">
+                  style="cursor: pointer; display: flex; justify-content: center; align-items: center; border-radius: 1px"
+                  @click="() => handleEditChapterItem(index)"
+                >
                   <v-icon icon="mdi-pencil" color="#42A5F5" style="cursor: pointer"></v-icon>
                 </div>
               </template>
@@ -520,6 +576,7 @@ const handleAddChapter = () => {
                    style="background-color: rgba(0, 0, 0, 0.3); height: 50px; position: fixed; bottom: 0; z-index: 200; left: 0;">
       <div class="d-flex align-center justify-center flex-row">
         <v-btn
+          :disabled="mode === VIEW_MODE"
           height="36"
           width="140"
           color="error"
@@ -534,11 +591,13 @@ const handleAddChapter = () => {
           <span class="text-white">CANCEL</span>
         </v-btn>
         <v-btn
+          :disabled="mode === VIEW_MODE"
           height="36"
           width="140"
           color="success"
           variant="flat"
           class="mx-1"
+          @click="handleRegistStory"
         >
           <template #prepend>
             <v-icon :color="'white'">

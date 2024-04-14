@@ -69,7 +69,7 @@ const POST = (url: string, data: number | string | object, showToast: boolean, s
 }
 
 
-const PUT = (url: string, data: number | string, showToast: boolean, showDialog: boolean, langCodes: ErrorCodeMap) => {
+const PUT = (url: string, data: number | string | object, showToast: boolean, showDialog: boolean, langCodes: ErrorCodeMap) => {
   const serverLink: TServerLink = Properties().SERVER_LINK as TServerLink
   if (!instance) {
     instance = axios.create({

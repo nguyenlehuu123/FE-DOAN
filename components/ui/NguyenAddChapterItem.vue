@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import { useChapterStore } from "~/stores/chapterStore";
+
 defineOptions({
   inheritAttrs: false
 })
 
 interface Props {
+  index: number
   width?: string | number
   chapterNumber: number
   fileName: string
@@ -12,6 +15,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  index: -1,
   width: 1000,
   chapterNumber: 0,
   fileName: '',
@@ -19,12 +23,29 @@ const props = withDefaults(defineProps<Props>(), {
   status: 1
 })
 
+const emit = defineEmits(['edit-chapter-item'])
+
+const chapterStore = useChapterStore()
 const itemsStatus = ['Đang khóa', 'Đang mở']
 const statusMenu = ref(props.status)
+const chapterItemRef = ref()
+
+const handleEditChapterItem = () => {
+  emit('edit-chapter-item', props.index)
+}
+
+const handleDeleteChapterItem = () => {
+  chapterStore.handleRemoveChapterModel(props.index)
+}
+
+defineExpose({
+  chapterItemRef
+})
 </script>
 
 <template>
   <v-card
+    ref="chapterItemRef"
     :style="`width: ${(props.width + '').replace('px', '')}px`"
     v-bind="$attrs"
   >
@@ -56,8 +77,8 @@ const statusMenu = ref(props.status)
           </v-menu>
         </div>
         <div style="display: flex; gap: 10px">
-          <v-icon icon="mdi-pencil" color="#42A5F5" style="cursor: pointer"></v-icon>
-          <v-icon icon="mdi-delete" color="#E53935" style="cursor: pointer"></v-icon>
+          <v-icon icon="mdi-pencil" color="#42A5F5" style="cursor: pointer" @click="handleEditChapterItem"></v-icon>
+          <v-icon icon="mdi-delete" color="#E53935" style="cursor: pointer" @click="handleDeleteChapterItem"></v-icon>
         </div>
       </v-card-actions>
     </div>

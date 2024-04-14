@@ -12,4 +12,10 @@ export default {
   getAllStoryGenre(payload = {}, langCodes = {}) {
     return http.GET(`${resource}/get-all-story-genre`, payload, false, false, langCodes);
   },
+  uploadStory(payload = {}, langCodes = {}) {
+    return http.POST(`${resource}/upload`, payload, false, true, langCodes);
+  },
+  updateStory(params: number | string, payload = {}, langCodes = {}) {
+    return http.PUT(`${resource}/update-story/${params}`, payload, false, true, langCodes);
+  }
 }
