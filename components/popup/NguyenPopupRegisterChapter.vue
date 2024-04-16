@@ -34,10 +34,10 @@ interface IChapterAdd {
   fileName: string;
 }
 
-const chapterAddModel = ref<IChapterAdd[]>([...chapterStore.getChapterAddModel])
+const chapterAddModel = ref<IChapterAdd[]>(chapterStore.getChapterAddModel)
 watch(() => chapterStore.getChapterAddModel, (value) => {
   chapterAddModel.value = value
-})
+}, { deep: true })
 const chapterAddItem = ref<IChapterAdd>({
   chapterNumber: null,
   statusKey: null,

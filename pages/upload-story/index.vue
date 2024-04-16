@@ -13,6 +13,7 @@ import { useI18n } from "vue-i18n";
 import { DateHelper } from "~/common/helper";
 import { showDialogStore } from "~/stores/showDialogStore";
 import { useChapterStore } from "~/stores/chapterStore";
+import NguyenPopupRegisterChapter from "~/components/popup/NguyenPopupRegisterChapter.vue";
 
 const headersFixed = [
   {
@@ -307,6 +308,7 @@ const handleEditStory = (storyId: number) => {
         image: story.image,
         storyGenreId: story.storyGenreEntity.storyGenreId
       }
+      debugger
       chapterAddModel.value = story.chapterEntities.map((chapter: IChapterData) => {
         return {
           chapterNumber: chapter.chapterNumber,
@@ -316,6 +318,8 @@ const handleEditStory = (storyId: number) => {
           fileName: chapter.fileName
         }
       })
+      chapterStore.handleResetChapterModel()
+      chapterStore.handleAddMultipleChapterModel(chapterAddModel.value)
     })
 }
 
@@ -375,6 +379,7 @@ const handleRegistStory = () => {
 
 </script>
 <template>
+  <nguyen-popup-register-chapter></nguyen-popup-register-chapter>
   <div style="margin-bottom: 50px">
     <div class="my-2">
       <v-icon icon="mdi-magnify"></v-icon>

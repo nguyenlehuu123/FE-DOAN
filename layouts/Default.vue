@@ -5,7 +5,6 @@
     <nguyen-popup-register></nguyen-popup-register>
     <nguyen-dialog-http></nguyen-dialog-http>
     <nguyen-dialog-confirm></nguyen-dialog-confirm>
-    <nguyen-popup-register-chapter></nguyen-popup-register-chapter>
     <v-main>
       <div style="max-width: 1500px; margin: auto; margin-top: -60px;">
         <nuxt-page></nuxt-page>
