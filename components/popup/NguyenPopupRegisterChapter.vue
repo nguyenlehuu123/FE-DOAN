@@ -99,6 +99,13 @@ const handleDeleteChapterItem = (index: number) => {
   chapterAddModel.value.splice(index, 1)
 }
 
+const handleChangeStatusChapterItem = (payload: {
+  index: number
+  status: number
+}) => {
+  chapterAddModel.value[payload.index].statusKey = payload.status
+}
+
 defineExpose({
   handleEditChapterItem
 })
@@ -130,6 +137,7 @@ defineExpose({
           ref="addChapterItemHandleRef"
           @edit-chapter-item="handleEditChapterItem"
           @delete-chapter-item="handleDeleteChapterItem"
+          @status-chapter-item="handleChangeStatusChapterItem"
           v-for="(chapter, index) in chapterAddModel"
           :key="index"
           :index="index"

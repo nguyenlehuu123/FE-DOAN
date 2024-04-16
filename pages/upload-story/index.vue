@@ -243,7 +243,7 @@ const authorSelect = ref<IAuthorSelect[] | null>(null)
 const storyGenreSelect = ref<IStoryGenreSelect[] | null>(null)
 const mode = ref(VIEW_MODE)
 const authorIdModel = ref<number[]>([])
-const chapterAddModel = ref<IChapterAdd[]>(chapterStore.getChapterAddModel)
+const chapterAddModel = ref<IChapterAdd[]>([...chapterStore.getChapterAddModel])
 watch(() => chapterStore.getChapterAddModel, (value) => {
   chapterAddModel.value = value
 })
@@ -308,7 +308,6 @@ const handleEditStory = (storyId: number) => {
         image: story.image,
         storyGenreId: story.storyGenreEntity.storyGenreId
       }
-      debugger
       chapterAddModel.value = story.chapterEntities.map((chapter: IChapterData) => {
         return {
           chapterNumber: chapter.chapterNumber,
@@ -554,6 +553,12 @@ const handleRegistStory = () => {
               :headers="headersChapter"
               :items="chapterAddModel"
             >
+              <template #item.statusKey="{ item }">
+                <div>
+                  <v-icon v-if="item?.statusKey === 1" icon="mdi-lock-alert-outline"></v-icon>
+                  <v-icon v-else icon="mdi-lock-open-outline"></v-icon>
+                </div>
+              </template>
               <template #item.edit="{ item, index }">
                 <div
                   style="cursor: pointer; display: flex; justify-content: center; align-items: center; border-radius: 1px"

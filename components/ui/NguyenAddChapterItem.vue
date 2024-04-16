@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useChapterStore } from "~/stores/chapterStore";
 
 defineOptions({
   inheritAttrs: false
@@ -25,10 +24,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits([
   'edit-chapter-item',
-  'delete-chapter-item'
+  'delete-chapter-item',
+  'status-chapter-item'
 ])
 
-const chapterStore = useChapterStore()
 const itemsStatus = ['Đang khóa', 'Đang mở']
 const statusMenu = ref(props.status)
 const chapterItemRef = ref()
@@ -39,6 +38,14 @@ const handleEditChapterItem = () => {
 
 const handleDeleteChapterItem = () => {
   emit('delete-chapter-item', props.index)
+}
+
+const handleChangeStatusChapterItem = (value: number) => {
+  statusMenu.value = value
+  emit('status-chapter-item', {
+    index: props.index,
+    status: value
+  })
 }
 
 defineExpose({
@@ -72,7 +79,7 @@ defineExpose({
                 v-for="(item, index) in itemsStatus"
                 :key="index"
                 :value="index + 1"
-                @click="statusMenu = index + 1"
+                @click="() => handleChangeStatusChapterItem(index + 1)"
               >
                 <v-list-item-title>{{ item }}</v-list-item-title>
               </v-list-item>

@@ -49,6 +49,8 @@ interface IChapterData {
   chapterId: number;
   viewNumber: number;
   statusKey: number;
+  urlFile: string;
+  fileName: string;
   chapterNumber: number;
   releaseDate: string;
 }
@@ -233,6 +235,18 @@ const fetchMessage = () => {
   })
 }
 
+function handleSeeGenreStory(index: number) {
+  if (chapterData.value) {
+    if (chapterData.value[index].statusKey === 1) {
+      dialogHttpStoreLocal.setContent(i18n.t('message.000012'))
+      dialogHttpStoreLocal.setShow(true)
+    } else {
+      const url = chapterData.value[index].urlFile;
+      window.open(url, '_blank');
+    }
+  }
+}
+
 onMounted(() => {
   connect().then(fetchMessage)
 })
@@ -316,6 +330,7 @@ onBeforeUnmount(() => {
     </div>
     <div class="mt-8" v-if="items">
       <nguyen-data-table
+        @see-genre-story="handleSeeGenreStory"
         :headers="headersFixed"
         :items="items"
         :height="400"
@@ -328,7 +343,7 @@ onBeforeUnmount(() => {
         </template>
         <template #item.statusKey="{ item }">
           <div>
-            <v-icon v-if="item?.statusKey === 0" icon="mdi-lock-alert-outline"></v-icon>
+            <v-icon v-if="item?.statusKey === 1" icon="mdi-lock-alert-outline"></v-icon>
             <v-icon v-else icon="mdi-lock-open-outline"></v-icon>
           </div>
         </template>
@@ -390,6 +405,5 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style scoped>
-
+<style>
 </style>

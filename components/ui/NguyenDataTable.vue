@@ -1,5 +1,8 @@
 <script setup lang="ts">
 const slots = useSlots()
+const emit = defineEmits([
+  'see-genre-story'
+])
 defineOptions({
   inheritAttrs: false
 })
@@ -38,6 +41,18 @@ const props = withDefaults(defineProps<Props>(), {
       item-value="name"
       class="css-table-column data-table"
     >
+      <template #item="{item, index}">
+        <v-data-table-row
+          :item="{key: index, index: index, columns: item}"
+          :index="index"
+          style="background-color: #FF8F00"
+          @click="emit('see-genre-story', index)"
+        >
+          <template v-for="(_, name) in $slots" #[name]="scope">
+            <slot v-if="name.includes('item.')" :name="name" v-bind="{...scope, item: item}"/>
+          </template>
+        </v-data-table-row>
+      </template>
       <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
         <slot :name="name" v-bind="slotData"></slot>
       </template>
