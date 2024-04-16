@@ -519,6 +519,7 @@ const handleRegistStory = () => {
                 @upload-image="storyInfoModel.image = $event"
                 width-image="150"
                 height-image="180"
+                :url-image="storyInfoModel.image"
                 :disabled="mode == VIEW_MODE"
               ></nguyen-upload-image>
             </div>

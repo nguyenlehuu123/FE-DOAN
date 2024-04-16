@@ -14,16 +14,22 @@ const emit = defineEmits<{
 interface Props {
   widthImage: string | number
   heightImage: string | number
+  urlImage: string | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
   widthImage: 180,
-  heightImage: 233
+  heightImage: 233,
+  urlImage: null
 })
 
 let selectedFile = ref()
-const urlFileUpload = ref<string | null>(null);
-
+const urlFileUpload = ref<string | null>(props.urlImage);
+watch(() => props.urlImage, (value) => {
+  urlFileUpload.value = value
+}, {
+  deep: true
+})
 const handleSelectFile = async (event: any) => {
   if (urlFileUpload.value !== null) {
     UseFirebase.handleDeleteFile(urlFileUpload.value);
