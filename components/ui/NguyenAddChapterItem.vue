@@ -23,7 +23,10 @@ const props = withDefaults(defineProps<Props>(), {
   status: 1
 })
 
-const emit = defineEmits(['edit-chapter-item'])
+const emit = defineEmits([
+  'edit-chapter-item',
+  'delete-chapter-item'
+])
 
 const chapterStore = useChapterStore()
 const itemsStatus = ['Đang khóa', 'Đang mở']
@@ -35,7 +38,7 @@ const handleEditChapterItem = () => {
 }
 
 const handleDeleteChapterItem = () => {
-  chapterStore.handleRemoveChapterModel(props.index)
+  emit('delete-chapter-item', props.index)
 }
 
 defineExpose({

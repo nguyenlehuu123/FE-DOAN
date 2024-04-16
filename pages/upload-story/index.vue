@@ -258,7 +258,7 @@ const storyEdit = ref<number | null>(null)
 const handleSearchStory = () => {
   const request = {
     storyName: searchConditionGroup.value.storyName,
-    nameAuthor: searchConditionGroup.value.authorName
+    authorName: searchConditionGroup.value.authorName
   }
   const langCodes = {
     404: i18n.t('message.000010')
@@ -320,13 +320,11 @@ const handleEditStory = (storyId: number) => {
 }
 
 const handleAddChapter = () => {
-  chapterStore.handleAddMultipleChapterModel(chapterAddModel.value)
   showDialogLocal.handleToggleShowDialogRegisterChapter()
 }
 
 const handleEditChapterItem = (index: number) => {
   showDialogLocal.handleToggleShowDialogRegisterChapter()
-
 }
 
 function buildRequestStory(): IStoryDetail {

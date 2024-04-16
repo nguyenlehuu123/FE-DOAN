@@ -8,10 +8,15 @@ import NguyenSelect from "~/components/ui/NguyenSelect.vue";
 import NguyenUploadFile from "~/components/ui/NguyenUploadFile.vue";
 import NguyenAddChapterItem from "~/components/ui/NguyenAddChapterItem.vue";
 
+const ADD_MODE = 1
+const EDIT_MODE = 2
+
 const showDialog = showDialogStore()
 const chapterStore = useChapterStore()
 const form = ref()
 const addChapterItemHandleRef = ref()
+const mode = ref<number>(ADD_MODE)
+const indexChapterItem = ref<number>(-1)
 const itemsStatus = [{
   statusKey: 1,
   statusName: 'Khoá'
@@ -29,7 +34,10 @@ interface IChapterAdd {
   fileName: string;
 }
 
-const chapterAddModel = ref<IChapterAdd[]>(chapterStore.getChapterAddModel)
+const chapterAddModel = ref<IChapterAdd[]>([...chapterStore.getChapterAddModel])
+watch(() => chapterStore.getChapterAddModel, (value) => {
+  chapterAddModel.value = value
+})
 const chapterAddItem = ref<IChapterAdd>({
   chapterNumber: null,
   statusKey: null,
@@ -58,9 +66,12 @@ const handleClickAddChapter = async () => {
   if (!valid) {
     return
   }
-
-  debugger
-  chapterAddModel.value.push(chapterAddItem.value)
+  if (mode.value === ADD_MODE) {
+    chapterAddModel.value = [...chapterAddModel.value, chapterAddItem.value]
+  } else {
+    chapterAddModel.value[indexChapterItem.value] = chapterAddItem.value
+    mode.value = ADD_MODE
+  }
   clearFormData()
 }
 
@@ -74,13 +85,18 @@ const handleEmittedUploadFile = (payload: {
 
 const handleClickApply = () => {
   chapterStore.handleResetChapterModel()
-  debugger
   chapterStore.handleAddMultipleChapterModel(chapterAddModel.value)
   showDialog.handleToggleShowDialogRegisterChapter()
 }
 
 const handleEditChapterItem = (index: number) => {
+  mode.value = EDIT_MODE
+  indexChapterItem.value = index
   chapterAddItem.value = chapterAddModel.value[index]
+}
+
+const handleDeleteChapterItem = (index: number) => {
+  chapterAddModel.value.splice(index, 1)
 }
 
 defineExpose({
@@ -113,6 +129,7 @@ defineExpose({
         <nguyen-add-chapter-item
           ref="addChapterItemHandleRef"
           @edit-chapter-item="handleEditChapterItem"
+          @delete-chapter-item="handleDeleteChapterItem"
           v-for="(chapter, index) in chapterAddModel"
           :key="index"
           :index="index"
