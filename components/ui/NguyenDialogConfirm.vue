@@ -8,7 +8,7 @@ const message = computed(() => dialogConfirm.getContentMessage())
 const confirmCallBack = () => {
   const confirmResolve = dialogConfirm.getConfirmResolve()
   if (confirmResolve) {
-    confirmResolve(...dialogConfirm.getConfirmResolve())
+    confirmResolve(...dialogConfirm.getConfirmParam())
     dialogConfirm.setConfirmParam([])
   }
   dialogConfirm.setShow(false)
@@ -28,7 +28,7 @@ const cancelCallBack = () => {
   <v-dialog
     :model-value="show"
     :width="340"
-    :max-height="298"
+    :max-height="330"
     position="fixed"
     style="z-index: 9999"
     top="50%"

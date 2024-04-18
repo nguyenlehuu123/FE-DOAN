@@ -7,12 +7,19 @@ import NguyenDatePicker from "~/components/ui/NguyenDatePicker.vue";
 import NguyenSelect from "~/components/ui/NguyenSelect.vue";
 import NguyenUploadFile from "~/components/ui/NguyenUploadFile.vue";
 import NguyenAddChapterItem from "~/components/ui/NguyenAddChapterItem.vue";
+import { useI18n } from "vue-i18n";
+import { dialogConfirmStore } from "~/stores/dialogConfirmStore";
+import { computed } from "#imports";
+import { useDraftingStore } from "~/stores/draftingStore";
 
 const ADD_MODE = 1
 const EDIT_MODE = 2
 
+const i18n = useI18n()
 const showDialog = showDialogStore()
 const chapterStore = useChapterStore()
+const dialogConfirm = dialogConfirmStore()
+const draftingStore = useDraftingStore()
 const form = ref()
 const addChapterItemHandleRef = ref()
 const mode = ref<number>(ADD_MODE)
@@ -46,7 +53,29 @@ const chapterAddItem = ref<IChapterAdd>({
   fileName: ''
 })
 
+const drafting = computed(
+  {
+    get() {
+      return draftingStore.getDrafting
+    },
+    set(value: boolean) {
+      draftingStore.updateDrafting(value)
+    }
+  }
+)
 const handleClickCancel = () => {
+  if (drafting.value) {
+    dialogConfirm.setConfirmResolve(handleCancel)
+    dialogConfirm.setContentMessage(i18n.t('message.000013'))
+    dialogConfirm.setShow(true)
+  } else {
+    handleCancel()
+  }
+}
+
+const handleCancel = () => {
+  clearFormData()
+  chapterAddModel.value = []
   showDialog.handleToggleShowDialogRegisterChapter()
 }
 
@@ -72,6 +101,7 @@ const handleClickAddChapter = async () => {
     chapterAddModel.value[indexChapterItem.value] = chapterAddItem.value
     mode.value = ADD_MODE
   }
+  drafting.value = true
   clearFormData()
 }
 
@@ -81,6 +111,7 @@ const handleEmittedUploadFile = (payload: {
 }) => {
   chapterAddItem.value.urlFile = payload.urlFileUpload as string
   chapterAddItem.value.fileName = payload.fileName
+  drafting.value = true
 }
 
 const handleClickApply = () => {
@@ -128,7 +159,10 @@ defineExpose({
       flat
       height="100%"
     >
-      <v-card-title class="mx-auto" style="font-weight: bolder">Add Chapter</v-card-title>
+      <v-card-title class="mx-auto" style="font-weight: bolder">{{
+          $t('page.uploadStory.popupRegisChapter.addChapter')
+        }}
+      </v-card-title>
       <div
         class="mx-auto"
         style="height: 340px; overflow-y: auto; overflow-x: hidden; padding: 0 40px;"
@@ -153,45 +187,49 @@ defineExpose({
           <div style="display: flex; justify-content: space-around">
             <nguyen-text-field
               v-model="chapterAddItem.chapterNumber"
-              label="Chapter Number"
               density="compact"
               style="border-radius: 8px"
+              :label="$t('page.uploadStory.popupRegisChapter.chapterNumber')"
               :text-field-width="200"
               :rules="[
-              (value) => validation.required(value, 'Chapter Number'),
-              (value) => validation.isRealNumber(value, 'Chapter Number')
+              (value) => validation.required(value, $t('page.uploadStory.popupRegisChapter.chapterNumber')),
+              (value) => validation.isRealNumber(value, $t('page.uploadStory.popupRegisChapter.chapterNumber'))
             ]"
+              @input="drafting = true"
             >
             </nguyen-text-field>
             <nguyen-date-picker
               v-model="chapterAddItem.releaseDate"
-              label="Release Date"
+              :label="$t('page.uploadStory.popupRegisChapter.releaseDate')"
               :label-width="150"
               :text-field-width="200"
               :date-picker-width="200"
               :rules="[
-                 (value) => validation.required(value, 'Release Date')
+                 (value) => validation.required(value, $t('page.uploadStory.popupRegisChapter.releaseDate'))
               ]"
+              @input="drafting = true"
             >
             </nguyen-date-picker>
             <nguyen-select
               v-model="chapterAddItem.statusKey"
               width="200px"
-              label-select="Trạng thái"
-              label="chọn trạng thái"
               item-title="statusName"
               item-value="statusKey"
+              :label-select="$t('page.uploadStory.popupRegisChapter.status')"
+              :label="$t('page.uploadStory.popupRegisChapter.selectStatus')"
               :items="itemsStatus"
               :rules="[
-                  (value) => validation.required(value, 'Trạng thái')
+                  (value) => validation.required(value, $t('page.uploadStory.popupRegisChapter.status'))
               ]"
+              @update:menu="drafting = true"
+              @input="drafting = true"
             >
             </nguyen-select>
           </div>
           <div style="display: flex; justify-content: center">
             <nguyen-upload-file
               @upload-file="handleEmittedUploadFile"
-              label="File Chapter"
+              :label="$t('page.uploadStory.popupRegisChapter.fileChapter')"
               :label-width="150"
               :horizontal="true"
               :width="580"
@@ -207,7 +245,7 @@ defineExpose({
               class="bg-light-green-accent-3"
               @click="handleClickAddChapter"
             >
-              Add Chapter
+              {{ $t('page.uploadStory.popupRegisChapter.addChapter') }}
             </v-btn>
           </div>
         </div>
@@ -218,14 +256,14 @@ defineExpose({
               class="bg-blue-darken-1"
               @click="handleClickApply"
             >
-              Apply
+              {{ $t('page.uploadStory.popupRegisChapter.apply') }}
             </v-btn>
             <v-btn
               variant="elevated"
               class="bg-red-darken-2"
               @click="handleClickCancel"
             >
-              Huỷ
+              {{ $t('page.uploadStory.popupRegisChapter.cancel') }}
             </v-btn>
           </v-card-actions>
         </div>

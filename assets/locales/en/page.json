@@ -68,5 +68,39 @@
     "monthAgo": "month ago",
     "yearAgo": "year ago",
     "collapse": "collapse"
+  },
+  "uploadStory": {
+    "addStory": "Add story",
+    "search": "Search",
+    "searchStory": "Search story",
+    "storyName": "Story name",
+    "authorName": "Author name",
+    "dateSubmitted": "Date Submitted",
+    "likes": "Likes",
+    "flow": "Follow",
+    "rating": "Rating",
+    "edit": "Edit",
+    "releaseDate": "Release date",
+    "category": "Category",
+    "description": "Description",
+    "chapter": "Chapter",
+    "status": "Status",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "register": "Register",
+    "addChapter": "Add chapter",
+    "noDataTable": "No data available in table",
+    "no": "No",
+    "popupRegisChapter": {
+      "chapterNumber": "Chapter number",
+      "releaseDate": "Release date",
+      "status": "Status",
+      "selectStatus": "Select status",
+      "fileChapter": "File Chapter",
+      "uploadFile": "Upload file",
+      "addChapter": "Add chapter",
+      "apply": "Apply",
+      "cancel": "Cancel"
+    }
   }
 }

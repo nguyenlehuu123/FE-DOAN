@@ -13,12 +13,16 @@ import { useI18n } from "vue-i18n";
 import { DateHelper } from "~/common/helper";
 import { showDialogStore } from "~/stores/showDialogStore";
 import { useChapterStore } from "~/stores/chapterStore";
+import { dialogConfirmStore } from "#imports";
 import NguyenPopupRegisterChapter from "~/components/popup/NguyenPopupRegisterChapter.vue";
+import { useDraftingStore } from "~/stores/draftingStore";
+import { computed } from "#imports";
 
+const i18n = useI18n()
 const headersFixed = [
   {
     key: 'no',
-    title: 'No',
+    title: i18n.t('page.uploadStory.no'),
     align: 'center',
     sortable: true,
     width: '5%',
@@ -26,7 +30,7 @@ const headersFixed = [
   },
   {
     key: 'storyName',
-    title: 'storyName',
+    title: i18n.t('page.uploadStory.storyName'),
     align: 'center',
     sortable: true,
     width: '25%',
@@ -34,7 +38,7 @@ const headersFixed = [
   },
   {
     key: 'authorName',
-    title: 'Name Author',
+    title: i18n.t('page.uploadStory.authorName'),
     align: 'center',
     sortable: true,
     width: '20%',
@@ -42,7 +46,7 @@ const headersFixed = [
   },
   {
     key: 'dateSubmitted',
-    title: 'date submitted',
+    title: i18n.t('page.uploadStory.dateSubmitted'),
     align: 'center',
     sortable: true,
     width: '15%',
@@ -50,7 +54,7 @@ const headersFixed = [
   },
   {
     key: 'likeNumber',
-    title: 'Like',
+    title: i18n.t('page.uploadStory.likes'),
     align: 'center',
     sortable: true,
     width: '10%',
@@ -58,7 +62,7 @@ const headersFixed = [
   },
   {
     key: 'followNumber',
-    title: 'Follow',
+    title: i18n.t('page.uploadStory.flow'),
     align: 'center',
     sortable: true,
     width: '10%',
@@ -66,7 +70,7 @@ const headersFixed = [
   },
   {
     key: 'rating',
-    title: 'Rating',
+    title: i18n.t('page.uploadStory.rating'),
     align: 'center',
     sortable: true,
     width: '10%',
@@ -74,7 +78,7 @@ const headersFixed = [
   },
   {
     key: 'edit',
-    title: 'Edit',
+    title: i18n.t('page.uploadStory.edit'),
     align: 'center',
     sortable: false,
     width: '5%',
@@ -84,7 +88,7 @@ const headersFixed = [
 const headersChapter = [
   {
     key: 'chapterNumber',
-    title: 'Chapter',
+    title: i18n.t('page.uploadStory.chapter'),
     align: 'center',
     sortable: true,
     width: '20%',
@@ -92,7 +96,7 @@ const headersChapter = [
   },
   {
     key: 'releaseDate',
-    title: 'Release Date',
+    title: i18n.t('page.uploadStory.releaseDate'),
     align: 'center',
     sortable: true,
     width: '30%',
@@ -108,7 +112,7 @@ const headersChapter = [
   },
   {
     key: 'statusKey',
-    title: 'Status',
+    title: i18n.t('page.uploadStory.status'),
     align: 'center',
     sortable: false,
     width: '10%',
@@ -116,7 +120,7 @@ const headersChapter = [
   },
   {
     key: 'edit',
-    title: 'Edit',
+    title: i18n.t('page.uploadStory.edit'),
     align: 'center',
     sortable: false,
     width: '10%',
@@ -124,7 +128,7 @@ const headersChapter = [
   },
   {
     key: 'delete',
-    title: 'Delete',
+    title: i18n.t('page.uploadStory.delete'),
     align: 'center',
     sortable: false,
     width: '10%',
@@ -235,9 +239,10 @@ const searchConditionGroup = ref<ISearchConditionGroup>({
   storyName: '',
   authorName: ''
 })
-const i18n = useI18n()
+
 const showDialogLocal = showDialogStore()
 const chapterStore = useChapterStore()
+const dialogConfirm = dialogConfirmStore()
 const items = ref<IStoryTable[] | null>(null)
 const authorSelect = ref<IAuthorSelect[] | null>(null)
 const storyGenreSelect = ref<IStoryGenreSelect[] | null>(null)
@@ -255,6 +260,18 @@ const storyInfoModel = ref<IStoryInfo>({
   storyGenreId: null
 })
 const storyEdit = ref<number | null>(null)
+
+const draftingStore = useDraftingStore()
+const drafting = computed(
+  {
+    get() {
+      return draftingStore.getDrafting
+    },
+    set(value: boolean) {
+      draftingStore.updateDrafting(value)
+    }
+  }
+)
 
 const handleSearchStory = () => {
   const request = {
@@ -277,9 +294,27 @@ const handleSearchStory = () => {
 }
 
 const handleClickAddStory = () => {
+  if (drafting.value) {
+    dialogConfirm.setConfirmResolve(addStory)
+    dialogConfirm.setContentMessage(i18n.t('message.000013'))
+    dialogConfirm.setShow(true)
+  } else {
+    addStory()
+  }
+}
+
+const addStory = () => {
   mode.value = ADD_MODE
   clearFormData()
   getAuthorSelectAndStoryGenreSelect()
+}
+
+const handleClickCancel = () => {
+  if (drafting.value) {
+    dialogConfirm.setConfirmResolve(addStory)
+    dialogConfirm.setContentMessage(i18n.t('message.000013'))
+    dialogConfirm.setShow(true)
+  }
 }
 
 const getAuthorSelectAndStoryGenreSelect = () => {
@@ -354,14 +389,15 @@ function clearFormData() {
   chapterAddModel.value = []
   chapterStore.handleResetChapterModel()
   formAddStoryRef.value.reset()
+  drafting.value = false
 }
 
 const handleRegistStory = () => {
   let request = buildRequestStory()
   if (mode.value === ADD_MODE) {
     const langCodes = {
-      404: i18n.t('message.000011', ['Thể loại']),
-      405: i18n.t('message.000011', ['Tác giả']),
+      404: i18n.t('message.000011', [i18n.t('page.uploadStory.category')]),
+      405: i18n.t('message.000011', [i18n.t('page.uploadStory.authorName')]),
     }
     uploadStoryRepository.uploadStory(request, langCodes)
       .then(response => {
@@ -382,7 +418,7 @@ const handleRegistStory = () => {
   <div style="margin-bottom: 50px">
     <div class="my-2">
       <v-icon icon="mdi-magnify"></v-icon>
-      <span>Search truyện</span>
+      <span>{{ $t(i18n.t('page.uploadStory.searchStory')) }}</span>
     </div>
     <v-divider class="mb-6"></v-divider>
     <div>
@@ -391,7 +427,7 @@ const handleRegistStory = () => {
       >
         <nguyen-text-field
           v-model.trim="searchConditionGroup.storyName"
-          label="Tên truyện"
+          :label="$t(i18n.t('page.uploadStory.storyName'))"
           density="compact"
           width="36"
           :text-field-width="500"
@@ -399,7 +435,7 @@ const handleRegistStory = () => {
         ></nguyen-text-field>
         <nguyen-text-field
           v-model.trim="searchConditionGroup.authorName"
-          label="Tên tác giả"
+          :label="$t(i18n.t('page.uploadStory.authorName'))"
           density="compact"
           width="36"
           :text-field-width="500"
@@ -410,7 +446,7 @@ const handleRegistStory = () => {
             style="background-color: #43A047; width: 140px"
             @click="handleSearchStory"
           >
-            Search
+            {{ $t('page.uploadStory.search') }}
           </v-btn>
         </div>
       </v-form>
@@ -445,7 +481,7 @@ const handleRegistStory = () => {
           class="bg-light-blue-lighten-1"
           @click="handleClickAddStory"
         >
-          Add story
+          {{ $t('page.uploadStory.addStory') }}
         </v-btn>
       </div>
       <v-divider class="mb-6"></v-divider>
@@ -459,11 +495,11 @@ const handleRegistStory = () => {
             <div>
               <nguyen-select
                 v-model="authorIdModel"
-                label-select="Tên tác giả"
                 density="compact"
                 width="500px"
                 item-title="authorName"
                 item-value="authorId"
+                :label-select="$t('page.uploadStory.authorName')"
                 :disabled="mode == VIEW_MODE"
                 :items="authorSelect ?? []"
                 :multiple="true"
@@ -472,23 +508,26 @@ const handleRegistStory = () => {
                 :rules="[
                   (value) => validation.required(value, 'Tên tác giả')
                 ]"
+                @update:menu="drafting = true"
+                @input="drafting = true"
               ></nguyen-select>
               <nguyen-text-field
                 v-model.trim="storyInfoModel.storyName"
-                label="Tên truyện"
                 density="compact"
                 width="36"
+                :label="$t('page.uploadStory.storyName')"
                 :disabled="mode == VIEW_MODE"
                 :text-field-width="500"
                 :horizontal="true"
                 :rules="[
                   (value) => validation.required(value, 'Tên truyện')
                 ]"
+                @input="drafting = true"
               ></nguyen-text-field>
               <nguyen-date-picker
                 v-model.trim="storyInfoModel.releaseDate"
-                label="Release Date"
                 horizontal
+                :label="$t('page.uploadStory.releaseDate')"
                 :disabled="mode == VIEW_MODE"
                 :label-width="150"
                 :text-field-width="500"
@@ -496,22 +535,24 @@ const handleRegistStory = () => {
                 :rules="[
                  (value) => validation.required(value, 'Release Date')
                 ]"
+                @input="drafting = true"
               >
               </nguyen-date-picker>
               <nguyen-select
                 v-model="storyInfoModel.storyGenreId"
-                label-select="Thể loại"
                 density="compact"
                 width="500px"
                 item-title="storyGenreName"
                 item-value="storyGenreId"
+                :label-select="$t('page.uploadStory.category')"
                 :disabled="mode == VIEW_MODE"
                 :items="storyGenreSelect ?? []"
                 :text-field-width="500"
                 :horizontal="true"
                 :rules="[
-                  (value) => validation.required(value, 'Thể loại')
+                  (value) => validation.required(value, $t('page.uploadStory.category'))
                 ]"
+                @input="drafting = true"
               ></nguyen-select>
             </div>
             <div style="margin-left: 200px">
@@ -526,15 +567,16 @@ const handleRegistStory = () => {
           </div>
           <nguyen-text-area
             v-model.trim="storyInfoModel.description"
-            label="Mô tả truyện"
+            :label="$t('page.uploadStory.description')"
             :disabled="mode == VIEW_MODE"
             :rows="4"
             :max-length="2000"
             :rules="[
-            (value) => validation.required(value, 'Mô tả truyện'),
-            (value) => validation.lengthMax(value, 2000, 'Mô tả truyện'),
-            (value) => validation.lengthMin(value, 100, 'Mô tả truyện')
-          ]"
+            (value) => validation.required(value, $t('page.uploadStory.description')),
+            (value) => validation.lengthMax(value, 2000, $t('page.uploadStory.description')),
+            (value) => validation.lengthMin(value, 100, $t('page.uploadStory.description'))
+            ]"
+            @input="drafting = true"
           >
           </nguyen-text-area>
         </v-form>
@@ -546,7 +588,7 @@ const handleRegistStory = () => {
               :disabled="mode == VIEW_MODE"
               @click="handleAddChapter"
             >
-              Add Chapter
+              {{ $t('page.uploadStory.addChapter') }}
             </v-btn>
           </div>
           <div>
@@ -589,13 +631,14 @@ const handleRegistStory = () => {
           color="error"
           variant="flat"
           class="mx-1"
+          @click="handleClickCancel"
         >
           <template #prepend>
             <v-icon :color="'white'">
               mdi-close-circle
             </v-icon>
           </template>
-          <span class="text-white">CANCEL</span>
+          <span class="text-white">{{ $t('page.uploadStory.cancel') }}</span>
         </v-btn>
         <v-btn
           :disabled="mode === VIEW_MODE"
@@ -611,7 +654,7 @@ const handleRegistStory = () => {
               mdi-check-circle
             </v-icon>
           </template>
-          <span class="text-white">REGIST</span>
+          <span class="text-white">{{ $t('page.uploadStory.register') }}</span>
         </v-btn>
       </div>
     </nguyen-footer>

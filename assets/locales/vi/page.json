@@ -68,5 +68,39 @@
     "monthAgo": "tháng trước",
     "yearAgo": "năm trước",
     "collapse": "Thu gọn"
+  },
+  "uploadStory": {
+    "addStory": "Thêm truyện",
+    "search": "Tìm kiếm",
+    "searchStory": "Tìm kiếm truyện",
+    "storyName": "Tên truyện",
+    "authorName": "Tên tác giả",
+    "dateSubmitted": "Ngày đăng",
+    "likes": "Lượt thích",
+    "flow": "Theo dõi",
+    "rating": "Đánh giá",
+    "edit": "Chỉnh sửa",
+    "releaseDate": "Ngày phát hành",
+    "category": "Thể loại",
+    "description": "Mô tả",
+    "chapter": "Chương",
+    "status": "Trạng thái",
+    "delete": "Xóa",
+    "cancel": "Hủy",
+    "register": "Đăng ký",
+    "addChapter": "Thêm chương",
+    "noDataTable": "Không có dữ liệu trong bảng",
+    "no": "STT",
+    "popupRegisChapter": {
+      "chapterNumber": "Số chương",
+      "releaseDate": "Ngày phát hành",
+      "status": "Trạng thái",
+      "selectStatus": "Chọn trạng thái",
+      "fileChapter": "File truyện",
+      "uploadFile": "Tải tệp lên",
+      "addChapter": "Thêm chương",
+      "apply": "Áp dụng",
+      "cancel": "Hủy"
+    }
   }
 }

@@ -4,9 +4,9 @@ export const dialogConfirmStore = defineStore('dialogConfirmStore', () => {
   const show = ref(false)
   const contentMessage = ref('Message Confirm')
   const confirmResolve = ref()
-  const confirmParam = ref()
+  const confirmParam = ref([])
   const cancelResolve = ref()
-  const cancelParam = ref()
+  const cancelParam = ref({})
 
   const setShow = (stateShow: boolean) => {
     show.value = stateShow

@@ -11,5 +11,6 @@
   "000009": "You need to login to perform this function!",
   "000010": "Sorry, there are no results for the keyword you entered!",
   "000011": "{0} does not exist",
-  "000012": "This chapter is currently locked"
+  "000012": "This chapter is currently locked",
+  "000013": "Are you sure you want to cancel what you're importing?"
 }

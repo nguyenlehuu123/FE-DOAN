@@ -63,6 +63,7 @@ const handleSendMessage = () => {
     commentId: props.parentCommentId
   })
   inputModel.value = null
+  emit('showInputComment', false)
 }
 </script>
 
