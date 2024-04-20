@@ -9,8 +9,8 @@ interface IUserInfo {
 export const userStore = defineStore('useStore', {
   state: () => {
     return {
-      useRole: '',
-      userInfo: {},
+      useRole: localStorage.getItem('useRole') ?? '',
+      userInfo: JSON.parse(localStorage.getItem('userInfo') || '{}'),
       authorization: getTokenFromCookie() ?? ''
     }
   },
@@ -27,9 +27,11 @@ export const userStore = defineStore('useStore', {
   },
   actions: {
     updateUserRole(role: string) {
+      localStorage.setItem('useRole', role);
       this.useRole = role
     },
     updateUserInfo(userInfo: IUserInfo) {
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
       this.userInfo = userInfo
     },
     updateAuthorization(authorization: string) {
