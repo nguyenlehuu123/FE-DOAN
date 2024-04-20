@@ -46,7 +46,6 @@ const tabs = ref<number>(1)
 const toggleMode = defineModel('toggleMode')
 const showDialog = showDialogStore()
 const userStoreLocal = userStore()
-
 const handleSetting = () => {
   // TODO
 }
@@ -66,31 +65,32 @@ const handleLogout = () => {
     })
 }
 
-const menuInfo = ref([
-  {
-    prependIcon: 'mdi-file-upload',
-    title: 'page.home.info.uploadStory',
-    handle: handleUploadStory
-  },
-  {
-    prependIcon: 'mdi-cog-outline',
-    title: 'page.home.info.setting',
-    handle: handleSetting,
-  },
-  {
-    prependIcon: 'mdi-logout',
-    title: 'page.home.info.logout',
-    handle: handleLogout
-  },])
-
 const computedMenuInfo = computed(() => {
-  return menuInfo.value.map(item => {
+  let baseMenu = [
+    {
+      prependIcon: 'mdi-cog-outline',
+      title: 'page.home.info.setting',
+      handle: handleSetting,
+    },
+    {
+      prependIcon: 'mdi-logout',
+      title: 'page.home.info.logout',
+      handle: handleLogout
+    },]
+  if (userStoreLocal.useRole == "ADMIN") {
+    baseMenu.unshift({
+      prependIcon: 'mdi-file-upload',
+      title: 'page.home.info.uploadStory',
+      handle: handleUploadStory
+    },)
+  }
+  return baseMenu.map(item => {
     return {
       ...item,
       title: i18n.t(item.title),
     };
   });
-});
+})
 
 
 const handleInfoMenu = (index: number) => {

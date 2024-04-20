@@ -10,4 +10,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (to.path === '/') {
     return navigateTo('/home')
   }
+
+  if (user.useRole === 'ADMIN' && to.path.split('/').length && to.path.split('/')[1] == 'upload-story') {
+    return
+  } else {
+    return navigateTo('/home')
+  }
 })
