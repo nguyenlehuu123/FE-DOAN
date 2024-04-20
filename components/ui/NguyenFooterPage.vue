@@ -5,5 +5,4 @@
 
 </template>
 <style scoped>
-
 </style>
