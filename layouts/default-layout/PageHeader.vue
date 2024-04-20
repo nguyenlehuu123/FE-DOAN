@@ -6,6 +6,7 @@ import { useI18n } from "vue-i18n";
 import { matchSorter } from 'match-sorter'
 import homeRepository from "~/repositories/master/homeRepository";
 import loginRepository from "~/repositories/master/loginRepository";
+import imgLogo from "~/assets/images/truyen_vv.jpg";
 import { removeTokenFromCookie } from "~/common/cookie";
 
 interface OptionHeaderI {
@@ -50,6 +51,10 @@ const handleSetting = () => {
   // TODO
 }
 
+const handleUploadStory = () => {
+  navigateTo('/upload-story')
+}
+
 const handleLogout = () => {
   loginRepository.logout()
     .then(() => {
@@ -61,11 +66,17 @@ const handleLogout = () => {
     })
 }
 
-const menuInfo = ref([{
-  prependIcon: 'mdi-cog-outline',
-  title: 'page.home.info.setting',
-  handle: handleSetting,
-},
+const menuInfo = ref([
+  {
+    prependIcon: 'mdi-file-upload',
+    title: 'page.home.info.uploadStory',
+    handle: handleUploadStory
+  },
+  {
+    prependIcon: 'mdi-cog-outline',
+    title: 'page.home.info.setting',
+    handle: handleSetting,
+  },
   {
     prependIcon: 'mdi-logout',
     title: 'page.home.info.logout',
@@ -127,10 +138,10 @@ const handleToggleLanguage = (i: number) => {
   >
     <template #prepend>
       <v-img
-        :width="40"
         cover
-        src="https://st.truyenqqvn.com/template/frontend/images/logo-icon.png"
         style="margin-left: 60px"
+        :width="40"
+        :src="imgLogo"
       ></v-img>
     </template>
     <v-app-bar-title>TRUYENVV</v-app-bar-title>

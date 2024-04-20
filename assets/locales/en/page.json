@@ -15,6 +15,7 @@
     },
     "info": {
       "setting": "Setting",
+      "uploadStory": "Upload story",
       "logout": "Logout"
     }
   },

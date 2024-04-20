@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import homeRepository from "~/repositories/master/homeRepository";
 import NguyenCategory from "~/components/ui/NguyenCategory.vue";
+import NguyenFooterPage from "~/components/ui/NguyenFooterPage.vue";
+import NguyenFooter from "~/components/ui/NguyenFooter.vue";
 
 
 interface IStory {
@@ -91,6 +93,11 @@ onMounted(() => {
         :total-visible="7"
       ></v-pagination>
     </div>
+  </div>
+  <div>
+    <nguyen-footer>
+      <nguyen-footer-page></nguyen-footer-page>
+    </nguyen-footer>
   </div>
 </template>
 

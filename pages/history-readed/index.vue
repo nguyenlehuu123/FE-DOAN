@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import NguyenCategory from "~/components/ui/NguyenCategory.vue";
+import NguyenFooterPage from "~/components/ui/NguyenFooterPage.vue";
+import NguyenFooter from "~/components/ui/NguyenFooter.vue";
 </script>
 <template>
   <div>
@@ -11,6 +13,11 @@ import NguyenCategory from "~/components/ui/NguyenCategory.vue";
       chapter="99"
     >
     </nguyen-category>
+  </div>
+  <div>
+    <nguyen-footer>
+      <nguyen-footer-page></nguyen-footer-page>
+    </nguyen-footer>
   </div>
 </template>
 

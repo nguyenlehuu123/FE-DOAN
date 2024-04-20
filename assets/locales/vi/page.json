@@ -15,7 +15,8 @@
     },
     "info": {
       "setting": "Cài đặt",
-      "logout": "Đăng xuất"
+      "logout": "Đăng xuất",
+      "uploadStory": "Đăng truyện"
     }
   },
   "login": {

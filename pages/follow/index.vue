@@ -2,6 +2,8 @@
 import NguyenCategory from "~/components/ui/NguyenCategory.vue";
 import followRepository from "~/repositories/master/followRepository";
 import { DateHelper } from "~/common/helper";
+import NguyenFooterPage from "~/components/ui/NguyenFooterPage.vue";
+import NguyenFooter from "~/components/ui/NguyenFooter.vue";
 
 
 interface IStory {
@@ -65,6 +67,11 @@ onMounted(() => {
       chapter="99"
     >
     </nguyen-category>
+  </div>
+  <div>
+    <nguyen-footer>
+      <nguyen-footer-page></nguyen-footer-page>
+    </nguyen-footer>
   </div>
 </template>
 

@@ -10,6 +10,8 @@ import { userStore } from "~/stores/useStore";
 import { dialogHttpStore } from "~/stores/dialogHttpStore";
 import { onMounted, reactive } from "vue";
 import { connect, disconnect, subscribe } from "~/services/websocket";
+import NguyenFooterPage from "~/components/ui/NguyenFooterPage.vue";
+import NguyenFooter from "~/components/ui/NguyenFooter.vue";
 
 interface IStory {
   createTimestamp: string;
@@ -402,6 +404,11 @@ onBeforeUnmount(() => {
         </div>
       </div>
     </div>
+  </div>
+  <div>
+    <nguyen-footer>
+      <nguyen-footer-page></nguyen-footer-page>
+    </nguyen-footer>
   </div>
 </template>
 
