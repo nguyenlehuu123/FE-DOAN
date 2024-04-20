@@ -27,7 +27,7 @@ const confirmRollback = function () {
   <v-dialog
     :model-value="show"
     :width="340"
-    :max-height="298"
+    :max-height="320"
     position="fixed"
     top="50%"
     left="50%"

@@ -14,5 +14,8 @@ export default {
   },
   searchAllStory(params = {}, langCodes = {}) {
     return http.GET(`${resource}/search`, params, false, false, langCodes)
+  },
+  getStoryGenre(params = {} as { storyGenreId: number }, payload = {}, langCodes = {}) {
+    return http.GET(`${resource}/get-story-genre/${params.storyGenreId}`, payload, false, true, langCodes)
   }
 }

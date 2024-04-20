@@ -3,6 +3,8 @@ import NguyenCategory from "~/components/ui/NguyenCategory.vue";
 import homeRepository from "~/repositories/master/homeRepository";
 import { showDialogStore } from "~/stores/showDialogStore";
 import { DateHelper } from "~/common/helper";
+import NguyenFooter from "~/components/ui/NguyenFooter.vue";
+import NguyenFooterPage from "~/components/ui/NguyenFooterPage.vue";
 
 interface IStory {
   createTimestamp: string;
@@ -144,6 +146,11 @@ watch(page, () => {
       :length="totalPaging"
       :total-visible="7"
     ></v-pagination>
+  </div>
+  <div>
+    <nguyen-footer>
+      <nguyen-footer-page></nguyen-footer-page>
+    </nguyen-footer>
   </div>
 </template>
 

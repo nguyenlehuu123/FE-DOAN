@@ -17,6 +17,8 @@ import { dialogConfirmStore } from "#imports";
 import NguyenPopupRegisterChapter from "~/components/popup/NguyenPopupRegisterChapter.vue";
 import { useDraftingStore } from "~/stores/draftingStore";
 import { computed } from "#imports";
+import Toast from '~/common/toast.ts'
+import { TOAST_TYPE } from "~/common/constant";
 
 const i18n = useI18n()
 const headersFixed = [
@@ -401,11 +403,13 @@ const handleRegistStory = () => {
     }
     uploadStoryRepository.uploadStory(request, langCodes)
       .then(response => {
+        Toast.showManual(i18n.t('message.000014', [i18n.t('page.uploadStory.register')]), TOAST_TYPE.SUCCESS)
         clearFormData()
       })
   } else if (mode.value === EDIT_MODE) {
     uploadStoryRepository.updateStory(storyEdit.value as number, request)
       .then(response => {
+        Toast.showManual(i18n.t('message.000014', [i18n.t('page.uploadStory.update')]), TOAST_TYPE.SUCCESS)
         clearFormData()
       })
   }
