@@ -80,7 +80,6 @@ interface IGetCommentResponse extends ICommentResponse {
   commentResponses: ICommentResponse[]
 }
 
-
 const i18n = useI18n()
 const headersFixed = [
   {
@@ -131,6 +130,7 @@ const chapterData = ref<IChapterData[] | null>(null)
 const items = ref<Items[] | undefined>()
 const storyFollowed = ref<IStory[] | null>(null)
 const isFollow = ref<boolean>(false)
+const isLike = ref<boolean>(false)
 const userStoreLocal = userStore()
 const dialogHttpStoreLocal = dialogHttpStore()
 const getCommentResponses = reactive<IGetCommentResponse[]>([])
@@ -151,7 +151,7 @@ const breadcrumbs = [
 onMounted(() => {
   Promise.all([
     mangaDetailRepository.getMangaDetail(storyId),
-    mangaDetailRepository.getAllCommentMana(storyId)
+    mangaDetailRepository.getAllCommentMana(storyId),
   ])
     .then((response) => {
       detailManga.value = response[0] as IStory
@@ -162,11 +162,25 @@ onMounted(() => {
       // TODO
     })
 
-  userStoreLocal.getAuthorization ? followRepository.getStoryFollowed()
-    .then((response) => {
-      storyFollowed.value = response as IStory[]
-    }) : ''
+  handleLikeAndFollow()
 })
+
+watch(() => userStoreLocal.getAuthorization, () => {
+  handleLikeAndFollow()
+})
+
+const handleLikeAndFollow = () => {
+  if (userStoreLocal.getAuthorization) {
+    Promise.all([
+      followRepository.getStoryFollowed(),
+      mangaDetailRepository.isLikeMaga(storyId)
+    ])
+      .then((response) => {
+        storyFollowed.value = response[0] as IStory[]
+        isLike.value = response[1] as boolean
+      })
+  }
+}
 
 watch(chapterData, () => {
   if (chapterData.value) {
@@ -214,6 +228,33 @@ function handleUnfollowStory() {
       isFollow.value = false
     })
     .catch(error => {
+    })
+}
+
+const handleLikeStory = () => {
+  if (userStoreLocal.getAuthorization) {
+    mangaDetailRepository.likeMaga(storyId, {})
+      .then(response => {
+        isLike.value = true
+        detailManga.value?.likeNumber && detailManga.value.likeNumber++
+      })
+      .catch(error => {
+        // TODO
+      })
+  } else {
+    dialogHttpStoreLocal.setContent(i18n.t('message.000009'))
+    dialogHttpStoreLocal.setShow(true)
+  }
+}
+
+const handleDisLikeStory = () => {
+  mangaDetailRepository.disLikeMaga(storyId, {})
+    .then(response => {
+      isLike.value = false
+      detailManga.value?.likeNumber && detailManga.value.likeNumber--
+    })
+    .catch(error => {
+      // TODO
     })
 }
 
@@ -311,13 +352,41 @@ onBeforeUnmount(() => {
           <v-btn class="bg-green-lighten-1" prepend-icon="mdi-notebook">
             {{ $t('page.mangaDetail.readBeginning') }}
           </v-btn>
-          <v-btn v-if="!isFollow" class="bg-red-accent-2" prepend-icon="mdi-heart" @click="handleFollowStory()">
+          <v-btn
+            v-if="!isFollow"
+            class="bg-red-accent-2"
+            style="width: 172px"
+            prepend-icon="mdi-heart"
+            @click="handleFollowStory()"
+          >
             {{ $t('page.mangaDetail.flow') }}
           </v-btn>
-          <v-btn v-if="isFollow" class="bg-red-accent-2" prepend-icon="mdi-close" @click="handleUnfollowStory()">
+          <v-btn
+            v-if="isFollow"
+            class="bg-red-accent-2"
+            style="width: 172px"
+            prepend-icon="mdi-close"
+            @click="handleUnfollowStory()"
+          >
             {{ $t('page.mangaDetail.unfollow') }}
           </v-btn>
-          <v-btn class="bg-light-blue-accent-3" prepend-icon="mdi-thumb-up">{{ $t('page.mangaDetail.likes') }}</v-btn>
+          <v-btn
+            v-if="!isLike"
+            class="bg-light-blue-accent-3"
+            style="width: 172px" prepend-icon="mdi-thumb-up"
+            @click="handleLikeStory()"
+          >
+            {{ $t('page.mangaDetail.likes') }}
+          </v-btn>
+          <v-btn
+            v-if="isLike"
+            class="bg-light-blue-accent-3"
+            style="width: 172px"
+            prepend-icon="mdi-thumb-down"
+            @click="handleDisLikeStory()"
+          >
+            {{ $t('page.mangaDetail.unlikes') }}
+          </v-btn>
         </div>
       </div>
     </div>

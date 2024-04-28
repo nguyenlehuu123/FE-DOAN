@@ -47,6 +47,7 @@
     "author": "Author",
     "status": "Status",
     "likes": "Likes",
+    "unlikes": "Unlikes",
     "flow": "Follow",
     "view": "View",
     "readBeginning": "read beginning",
