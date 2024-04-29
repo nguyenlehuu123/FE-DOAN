@@ -291,14 +291,19 @@ function handleSeeGenreStory(index: number) {
 }
 
 const handleRatingManga = (value: number) => {
-  rating.value = value
-  mangaDetailRepository.ratingManga(storyId, { rating: value })
-    .then(response => {
-      // TODO
-    })
-    .catch(error => {
-      // TODO
-    })
+  if (userStoreLocal.getAuthorization) {
+    rating.value = value
+    mangaDetailRepository.ratingManga(storyId, { rating: value })
+      .then(response => {
+        // TODO
+      })
+      .catch(error => {
+        // TODO
+      })
+  } else {
+    dialogHttpStoreLocal.setContent(i18n.t('message.000009'))
+    dialogHttpStoreLocal.setShow(true)
+  }
 }
 
 const handleShowRatingOverview = () => {

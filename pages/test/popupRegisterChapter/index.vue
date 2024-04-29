@@ -1,5 +1,4 @@
 <script setup>
-import validation from "~/common/validation.ts";
 import NguyenPopupRegisterChapter from "~/components/popup/NguyenPopupRegisterChapter.vue";
 
 definePageMeta({
