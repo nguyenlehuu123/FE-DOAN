@@ -17,7 +17,7 @@ import { dialogConfirmStore } from "#imports";
 import NguyenPopupRegisterChapter from "~/components/popup/NguyenPopupRegisterChapter.vue";
 import { useDraftingStore } from "~/stores/draftingStore";
 import { computed } from "#imports";
-import Toast from '~/common/toast.ts'
+import Toast from "~/common/toast.ts";
 import { TOAST_TYPE } from "~/common/constant";
 
 const i18n = useI18n()

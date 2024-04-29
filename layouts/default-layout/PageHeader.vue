@@ -60,7 +60,7 @@ const handleLogout = () => {
       //delete localStorage
       localStorage.removeItem('useRole');
       localStorage.removeItem('userInfo');
-      
+
       userStoreLocal.updateUserInfo({})
       userStoreLocal.updateAuthorization('')
       userStoreLocal.updateUserRole('')

@@ -18,5 +18,14 @@ export default {
   },
   isLikeMaga(params = {}, langCodes = {}) {
     return http.GET(`${resource}/is-liked/${params}`, {}, false, false, langCodes);
+  },
+  ratingManga(params = {}, payload = {}, langCodes = {}) {
+    return http.PUT(`${resource}/rating/${params}`, payload, false, false, langCodes);
+  },
+  overViewRatingManga(params = {}, langCodes = {}) {
+    return http.GET(`${resource}/rating-overview/${params}`, {}, false, false, langCodes);
+  },
+  isRatingManga(params = {}, langCodes = {}) {
+    return http.GET(`${resource}/is-rated/${params}`, {}, false, false, langCodes);
   }
 }
