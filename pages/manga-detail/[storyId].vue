@@ -12,6 +12,7 @@ import { onMounted, reactive } from "vue";
 import { connect, disconnect, subscribe } from "~/services/websocket";
 import NguyenFooterPage from "~/components/ui/NguyenFooterPage.vue";
 import NguyenFooter from "~/components/ui/NguyenFooter.vue";
+import readHistoryRepository from "~/repositories/master/readHistoryRepository";
 
 interface IStory {
   createTimestamp: string;
@@ -284,6 +285,7 @@ function handleSeeGenreStory(index: number) {
       dialogHttpStoreLocal.setContent(i18n.t('message.000012'))
       dialogHttpStoreLocal.setShow(true)
     } else {
+      readHistoryRepository.addReadHistory({ storyId: storyId })
       const url = chapterData.value[index].urlFile;
       window.open(url, '_blank');
     }
