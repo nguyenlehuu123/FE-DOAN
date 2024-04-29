@@ -19,7 +19,20 @@ interface IStory {
   updateTimestamp: string;
   updater: string;
   versionNo: number;
+  chapterEntities: IChapter[];
   storyGenreEntity: IStoryGenre
+}
+
+interface IChapter {
+  chapterId: number;
+  chapterName: string;
+  chapterNumber: number;
+  content: string;
+  createTimestamp: string;
+  deleteFlg: number;
+  storyId: number;
+  updateTimestamp: string;
+  versionNo: number;
 }
 
 interface IStoryGenre {
@@ -75,7 +88,7 @@ onMounted(() => {
       <div class="d-flex flex-wrap justify-start ga-10">
         <nguyen-category
           v-for="(storyGenre, index) in storyPage"
-          chapter="99"
+          :chapter="storyGenre?.chapterEntities.length"
           :src="storyGenre.image"
           :title="storyGenre.storyName"
           :posting-time="storyGenre.updateTimestamp"

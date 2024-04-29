@@ -57,6 +57,7 @@ watch(page, () => {
         :posting-time="item.readAt"
         :status="item.status"
         :chapter="item.totalChapter"
+        :story-id="item.storyId"
       >
       </nguyen-category>
     </div>

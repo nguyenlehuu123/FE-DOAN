@@ -6,33 +6,26 @@ import { DateHelper } from "~/common/helper";
 import NguyenFooter from "~/components/ui/NguyenFooter.vue";
 import NguyenFooterPage from "~/components/ui/NguyenFooterPage.vue";
 
-interface IStory {
-  createTimestamp: string;
-  creator: string;
-  deleteFlg: number;
-  description: string;
-  followNumber: number;
-  image: string;
-  likeNumber: number;
-  status: number;
-  storyName: string;
+interface IReadHistoryStoryDTO {
   storyId: number;
+  storyName: string;
+  status: number;
+  image: string;
   updateTimestamp: string;
-  updater: string;
-  versionNo: number;
+  totalChapter: number;
 }
 
-interface IStoryNewUpdate {
-  total: number,
-  storyEntities: IStory[]
+interface IReadHistoryStoryResponse {
+  total: number;
+  storyEntityDTOS: IReadHistoryStoryDTO[];
 }
 
 const useShow = showDialogStore()
 const page = ref<number>(1)
-const slideGroupItem = ref<IStory[] | null>(null)
-const storyNewUpdate = ref<IStoryNewUpdate | null>(null)
+const slideGroupItem = ref<IReadHistoryStoryDTO[] | null>(null)
+const storyNewUpdate = ref<IReadHistoryStoryResponse | null>(null)
 const totalPaging = ref<number>(0)
-const getStoryNewUpdate = ref<IStory[] | null>(null)
+const getStoryNewUpdate = ref<IReadHistoryStoryDTO[] | null>(null)
 
 const pagingRequest = {
   pageNum: page.value,
@@ -45,10 +38,10 @@ onMounted(() => {
     homeRepository.getStoryNewUpdate(pagingRequest, {})
   ])
     .then((response) => {
-      slideGroupItem.value = response[0] as IStory[]
-      storyNewUpdate.value = response[1] as IStoryNewUpdate
+      slideGroupItem.value = response[0] as IReadHistoryStoryDTO[]
+      storyNewUpdate.value = response[1] as IReadHistoryStoryResponse
       totalPaging.value = Math.ceil(storyNewUpdate.value.total / pagingRequest.pageSize)
-      getStoryNewUpdate.value = storyNewUpdate.value.storyEntities
+      getStoryNewUpdate.value = storyNewUpdate.value.storyEntityDTOS
     })
 })
 
@@ -56,9 +49,9 @@ watch(page, () => {
   pagingRequest.pageNum = page.value
   homeRepository.getStoryNewUpdate(pagingRequest, {})
     .then((response) => {
-      storyNewUpdate.value = response as IStoryNewUpdate
+      storyNewUpdate.value = response as IReadHistoryStoryResponse
       totalPaging.value = Math.ceil(storyNewUpdate.value.total / pagingRequest.pageSize)
-      getStoryNewUpdate.value = storyNewUpdate.value.storyEntities
+      getStoryNewUpdate.value = storyNewUpdate.value.storyEntityDTOS
     })
 })
 
@@ -112,7 +105,7 @@ watch(page, () => {
               :posting-time="slide.updateTimestamp"
               :status="slide.status"
               :story-id="slide.storyId"
-              chapter="99"
+              :chapter="slide.totalChapter"
               class="ma-4"
             >
             </nguyen-category>
@@ -128,7 +121,7 @@ watch(page, () => {
       <div class="d-flex flex-wrap justify-start ga-10">
         <nguyen-category
           v-for="(storyNew, index) in getStoryNewUpdate"
-          chapter="99"
+          :chapter="storyNew.totalChapter"
           :src="storyNew.image"
           :title="storyNew.storyName"
           :posting-time="storyNew.updateTimestamp"

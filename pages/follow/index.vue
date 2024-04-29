@@ -5,52 +5,22 @@ import { DateHelper } from "~/common/helper";
 import NguyenFooterPage from "~/components/ui/NguyenFooterPage.vue";
 import NguyenFooter from "~/components/ui/NguyenFooter.vue";
 
-
-interface IStory {
-  createTimestamp: string;
-  creator: string;
-  deleteFlg: number;
-  description: string;
-  followNumber: number;
-  image: string;
-  likeNumber: number;
-  status: number;
-  storyName: string;
+interface IReadHistoryStoryDTO {
   storyId: number;
+  storyName: string;
+  status: number;
+  image: string;
   updateTimestamp: string;
-  updater: string;
-  versionNo: number;
-  authorEntities: IAuthor[],
-  chapterEntities: IChapterData[]
+  totalChapter: number;
 }
 
-interface IAuthor {
-  authorId: number;
-  name: string;
-  pseudonym: string;
-  email: string;
-  address: string;
-  phone: string;
-}
 
-interface IChapterData {
-  creator: string;
-  createTimestamp: string;
-  updater: string;
-  updateTimestamp: string;
-  versionNo: number;
-  deleteFlg: number;
-  chapterId: number;
-  viewNumber: number;
-  statusKey: number;
-}
-
-const storyFollow = ref<IStory[] | null>(null)
+const storyFollow = ref<IReadHistoryStoryDTO[] | null>(null)
 
 onMounted(() => {
   followRepository.getStoryFollowed()
     .then((response) => {
-      storyFollow.value = response as IStory[]
+      storyFollow.value = response as IReadHistoryStoryDTO[]
     })
 })
 </script>
@@ -64,7 +34,7 @@ onMounted(() => {
       :posting-time="storyItem.updateTimestamp"
       :status="storyItem.status"
       :story-id="storyItem.storyId"
-      chapter="99"
+      :chapter="storyItem.totalChapter"
     >
     </nguyen-category>
   </div>
