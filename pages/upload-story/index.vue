@@ -35,7 +35,7 @@ const headersFixed = [
     title: i18n.t('page.uploadStory.storyName'),
     align: 'center',
     sortable: true,
-    width: '25%',
+    width: '20%',
     fixed: true
   },
   {
@@ -81,6 +81,14 @@ const headersFixed = [
   {
     key: 'edit',
     title: i18n.t('page.uploadStory.edit'),
+    align: 'center',
+    sortable: false,
+    width: '5%',
+    fixed: true
+  },
+  {
+    key: 'delete',
+    title: i18n.t('page.uploadStory.delete'),
     align: 'center',
     sortable: false,
     width: '5%',
@@ -340,6 +348,26 @@ const handleEditStory = (storyId: number) => {
     })
 }
 
+const handleDeleteStory = (storyId: number) => {
+  uploadStoryRepository.deleteStory(storyId)
+    .then(response => {
+      if (items.value) {
+        items.value = items?.value.filter(item => item.storyId !== storyId)
+        items.value.forEach((item, index) => {
+          item.no = index + 1;
+        });
+      }
+      Toast.showManual(i18n.t('message.000014', [i18n.t('page.uploadStory.delete')]), TOAST_TYPE.SUCCESS)
+    })
+}
+
+const handleClickDeleteStory = (storyId: number) => {
+  dialogConfirm.setConfirmParam([storyId])
+  dialogConfirm.setConfirmResolve(() => handleDeleteStory(storyId))
+  dialogConfirm.setContentMessage(i18n.t('message.000015'))
+  dialogConfirm.setShow(true)
+}
+
 const handleAddChapter = () => {
   showDialogLocal.handleToggleShowDialogRegisterChapter()
 }
@@ -396,9 +424,6 @@ const handleRegistStory = () => {
   }
 }
 
-watch(() => storyEdit.value, (value) => {
-  console.log(value)
-})
 </script>
 <template>
   <nguyen-popup-register-chapter
@@ -463,6 +488,15 @@ watch(() => storyEdit.value, (value) => {
             @click="() => handleEditStory(item?.storyId)"
           >
             <v-icon icon="mdi-pencil"></v-icon>
+          </div>
+        </template>
+        <template #item.delete="{ item }">
+          <div
+            style="cursor: pointer; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; border-radius: 1px"
+            class="delete-story-icon"
+            @click="() => handleClickDeleteStory(item?.storyId)"
+          >
+            <v-icon icon="mdi-trash-can-outline"></v-icon>
           </div>
         </template>
       </nguyen-data-table>
@@ -654,6 +688,10 @@ watch(() => storyEdit.value, (value) => {
 <style>
 .edit-story-icon:hover {
   background-color: #81C784;
+}
+
+.delete-story-icon:hover {
+  background-color: red;
 }
 
 .v-rating-collapse--size label {

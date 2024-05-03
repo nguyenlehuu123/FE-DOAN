@@ -20,5 +20,8 @@ export default {
   },
   getSequenceNumberStory(payload = {}, langCodes = {}) {
     return http.GET(`${resource}/sequence-number-story`, payload, false, false, langCodes);
+  },
+  deleteStory(params: number | string, langCodes = {}) {
+    return http.DELETE(`${resource}/delete-story/${params}`, {}, langCodes);
   }
 }
