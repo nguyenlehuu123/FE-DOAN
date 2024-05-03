@@ -227,6 +227,7 @@ const storyGenreSelect = ref<IStoryGenreSelect[] | null>(null)
 const mode = ref(VIEW_MODE)
 const authorIdModel = ref<number[]>([])
 const chapterAddModel = ref<IChapterAdd[]>([...chapterStore.getChapterAddModel])
+const sequenceStory = ref<number | null>(null)
 watch(() => chapterStore.getChapterAddModel, (value) => {
   chapterAddModel.value = value
 })
@@ -285,6 +286,10 @@ const addStory = () => {
   mode.value = ADD_MODE
   clearFormData()
   getAuthorSelectAndStoryGenreSelect()
+  uploadStoryRepository.getSequenceNumberStory()
+    .then(response => {
+      sequenceStory.value = response as number
+    })
 }
 
 const handleClickCancel = () => {
@@ -391,10 +396,15 @@ const handleRegistStory = () => {
   }
 }
 
-
+watch(() => storyEdit.value, (value) => {
+  console.log(value)
+})
 </script>
 <template>
-  <nguyen-popup-register-chapter></nguyen-popup-register-chapter>
+  <nguyen-popup-register-chapter
+    :story-id="mode ===  ADD_MODE ? sequenceStory : storyEdit"
+  >
+  </nguyen-popup-register-chapter>
   <div style="margin-bottom: 50px">
     <div class="my-2">
       <v-icon icon="mdi-magnify"></v-icon>

@@ -17,5 +17,8 @@ export default {
   },
   updateStory(params: number | string, payload = {}, langCodes = {}) {
     return http.PUT(`${resource}/update-story/${params}`, payload, false, true, langCodes);
+  },
+  getSequenceNumberStory(payload = {}, langCodes = {}) {
+    return http.GET(`${resource}/sequence-number-story`, payload, false, false, langCodes);
   }
 }

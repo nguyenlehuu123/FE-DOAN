@@ -12,6 +12,14 @@ import { dialogConfirmStore } from "~/stores/dialogConfirmStore";
 import { computed } from "#imports";
 import { useDraftingStore } from "~/stores/draftingStore";
 
+interface Props {
+  storyId: number | string
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  storyId: 0
+})
+
 const ADD_MODE = 1
 const EDIT_MODE = 2
 
@@ -24,6 +32,7 @@ const form = ref()
 const addChapterItemHandleRef = ref()
 const mode = ref<number>(ADD_MODE)
 const indexChapterItem = ref<number>(-1)
+const nguyenUploadFileRef = ref()
 const itemsStatus = [{
   statusKey: 1,
   statusName: 'Khoá'
@@ -103,6 +112,7 @@ const handleClickAddChapter = async () => {
   }
   drafting.value = true
   clearFormData()
+  nguyenUploadFileRef.value.clearFileUpload()
 }
 
 const handleEmittedUploadFile = (payload: {
@@ -227,7 +237,9 @@ defineExpose({
           </div>
           <div style="display: flex; justify-content: center">
             <nguyen-upload-file
+              ref="nguyenUploadFileRef"
               @upload-file="handleEmittedUploadFile"
+              :file-path="`file/chapter/${props.storyId}`"
               :label="$t('page.uploadStory.popupRegisChapter.fileChapter')"
               :label-width="150"
               :horizontal="true"

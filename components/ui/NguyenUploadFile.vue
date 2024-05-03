@@ -15,6 +15,7 @@ interface Props {
   disabled?: boolean
   horizontal: boolean
   width: string | number
+  filePath: string
 }
 
 interface IFileUpload {
@@ -30,7 +31,8 @@ const props = withDefaults(defineProps<Props>(), {
   rules: () => [],
   disabled: false,
   horizontal: false,
-  width: 0
+  width: 0,
+  filePath: ''
 })
 
 const fileInputModel = defineModel()
@@ -42,6 +44,13 @@ const emit = defineEmits({
     return true
   }
 })
+
+const clearFileUpload = () => { // New method
+  if (fileUpload.value.urlFileUpload !== '') {
+    fileUpload.value.urlFileUpload = ''
+    // fileUpload.value.fileName = ''
+  }
+}
 const fileInputRef = ref()
 const fileUpload = ref<IFileUpload>({
   urlFileUpload: '',
@@ -64,7 +73,7 @@ const handleFileChange = async (value: Event) => {
         UseFirebase.handleDeleteFile(fileUpload.value.urlFileUpload as string)
       }
       clearRequiredError()
-      const fileUploadAndProgress = { ...await UseFirebase.handleUploadFile('file/chapter', target.files[0]) }
+      const fileUploadAndProgress = { ...await UseFirebase.handleUploadFile(props.filePath, target.files[0]) }
       fileUpload.value.urlFileUpload = fileUploadAndProgress.downloadURL
       progress.value = fileUploadAndProgress.progress
       fileUpload.value.fileName = target.files[0]?.name
@@ -100,6 +109,10 @@ onMounted(() => {
       UseFirebase.handleDeleteFile(fileUpload.value.urlFileUpload as string)
     }
   })
+})
+
+defineExpose({
+  clearFileUpload
 })
 
 </script>
