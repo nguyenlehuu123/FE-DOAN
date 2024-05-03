@@ -35,7 +35,7 @@ const handleSelectFile = async (event: any) => {
     UseFirebase.handleDeleteFile(urlFileUpload.value);
   }
   selectedFile.value = event.target.files[0];
-  urlFileUpload.value = await UseFirebase.handleUploadFile('images', selectedFile.value)
+  urlFileUpload.value = { ...await UseFirebase.handleUploadFile('images', selectedFile.value) }.downloadURL
   emit('upload-image', urlFileUpload.value as string)
 };
 

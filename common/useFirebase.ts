@@ -1,20 +1,26 @@
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytesResumable } from "@firebase/storage";
 
+interface UploadResult {
+  downloadURL: string;
+  progress: number;
+}
+
 interface UseFirebase {
-  handleUploadFile: (folderUpload: string, file: File) => Promise<string | null>;
+  handleUploadFile: (folderUpload: string, file: File) => Promise<UploadResult>;
   handleDeleteFile: (file: string) => void;
 }
 
 const UseFirebase: UseFirebase = {
-  handleUploadFile: (folderUpload: string, file: File): Promise<string | null> => {
+  handleUploadFile: (folderUpload: string, file: File): Promise<UploadResult> => {
     return new Promise((resolve, reject) => {
       const storage = getStorage();
       const storageRef = ref(storage, `${folderUpload}/` + file.name);
       const uploadTask = uploadBytesResumable(storageRef, file);
 
+      let progress = 0;
       uploadTask.on('state_changed',
         (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           console.log(`Upload is ${progress}% done`);
           switch (snapshot.state) {
             case 'paused':
@@ -31,7 +37,7 @@ const UseFirebase: UseFirebase = {
         () => {
           // Handle successful uploads on complete
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            resolve(downloadURL)
+            resolve({ downloadURL, progress })
           });
         }
       );

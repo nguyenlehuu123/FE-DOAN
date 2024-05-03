@@ -159,9 +159,8 @@ defineExpose({
       flat
       height="100%"
     >
-      <v-card-title class="mx-auto" style="font-weight: bolder">{{
-          $t('page.uploadStory.popupRegisChapter.addChapter')
-        }}
+      <v-card-title class="mx-auto" style="font-weight: bolder">
+        {{ $t('page.uploadStory.popupRegisChapter.addChapter') }}
       </v-card-title>
       <div
         class="mx-auto"
@@ -242,7 +241,7 @@ defineExpose({
           <div style="display: flex; justify-content: right; margin-right: 64px">
             <v-btn
               variant="elevated"
-              class="bg-light-green-accent-3"
+              class="bg-light-green-accent-3 mt-8"
               @click="handleClickAddChapter"
             >
               {{ $t('page.uploadStory.popupRegisChapter.addChapter') }}

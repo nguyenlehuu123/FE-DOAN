@@ -105,32 +105,8 @@ const headersChapter = [
     fixed: true
   },
   {
-    key: 'view',
-    title: 'view chapter',
-    align: 'center',
-    sortable: true,
-    width: '20%',
-    fixed: true
-  },
-  {
     key: 'statusKey',
     title: i18n.t('page.uploadStory.status'),
-    align: 'center',
-    sortable: false,
-    width: '10%',
-    fixed: true
-  },
-  {
-    key: 'edit',
-    title: i18n.t('page.uploadStory.edit'),
-    align: 'center',
-    sortable: false,
-    width: '10%',
-    fixed: true
-  },
-  {
-    key: 'delete',
-    title: i18n.t('page.uploadStory.delete'),
     align: 'center',
     sortable: false,
     width: '10%',

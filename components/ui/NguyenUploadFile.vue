@@ -47,6 +47,7 @@ const fileUpload = ref<IFileUpload>({
   urlFileUpload: '',
   fileName: ''
 })
+const progress = ref(0)
 
 const handleUploadFile = () => {
   fileInputRef.value.$el.querySelector('input').click()
@@ -63,12 +64,20 @@ const handleFileChange = async (value: Event) => {
         UseFirebase.handleDeleteFile(fileUpload.value.urlFileUpload as string)
       }
       clearRequiredError()
-      fileUpload.value.urlFileUpload = await UseFirebase.handleUploadFile('file/chapter', target.files[0])
+      const fileUploadAndProgress = { ...await UseFirebase.handleUploadFile('file/chapter', target.files[0]) }
+      fileUpload.value.urlFileUpload = fileUploadAndProgress.downloadURL
+      progress.value = fileUploadAndProgress.progress
       fileUpload.value.fileName = target.files[0]?.name
       emit('uploadFile', fileUpload.value)
     }
   }
 }
+
+watch(() => fileInputModel.value, (newValue, oldValue) => {
+  if (oldValue && newValue === null) {
+    progress.value = 0;
+  }
+})
 
 const handleRequiredError = () => {
   fileInputRef.value.$el.getElementsByClassName('v-field__outline')[0].style.border = '1px solid red'
@@ -125,15 +134,23 @@ onMounted(() => {
             <slot :name="name" v-bind="slotData"></slot>
           </template>
         </v-file-input>
+        <v-progress-linear
+          style="margin-top: -24px;"
+          color="green"
+          :indeterminate="progress !== 0 && progress !== 100"
+          :model-value="progress"
+        ></v-progress-linear>
       </div>
-      <v-btn
-        @click="handleUploadFile"
-        prepend-icon="mdi-upload"
-        flat
-        style="background-color: #42A5F5; color: white; font-size: 12px; height: 40px"
-      >
-        Upload File
-      </v-btn>
+      <div>
+        <v-btn
+          @click="handleUploadFile"
+          prepend-icon="mdi-upload"
+          flat
+          style="background-color: #42A5F5; color: white; font-size: 12px; height: 40px"
+        >
+          Upload File
+        </v-btn>
+      </div>
     </div>
   </div>
 </template>
