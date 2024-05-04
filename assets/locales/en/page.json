@@ -16,7 +16,8 @@
     "info": {
       "setting": "Setting",
       "uploadStory": "Upload story",
-      "logout": "Logout"
+      "logout": "Logout",
+      "userManagement": "User management"
     }
   },
   "login": {

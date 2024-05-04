@@ -70,6 +70,10 @@ const handleLogout = () => {
     })
 }
 
+const handleUserManagement = () => {
+  navigateTo('/user-management')
+}
+
 const computedMenuInfo = computed(() => {
   let baseMenu = [
     {
@@ -87,7 +91,11 @@ const computedMenuInfo = computed(() => {
       prependIcon: 'mdi-file-upload',
       title: 'page.home.info.uploadStory',
       handle: handleUploadStory
-    },)
+    }, {
+      prependIcon: 'mdi-account-multiple-outline',
+      title: 'page.home.info.userManagement',
+      handle: handleUserManagement
+    })
   }
   return baseMenu.map(item => {
     return {
