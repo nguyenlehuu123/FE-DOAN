@@ -72,7 +72,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div style="margin-top: 100px">
     <div style="display: flex; align-items: center; gap: 20px; color: #4FC3F7">
       <v-icon icon="mdi-flag-variant"></v-icon>
       <span style="font-size: 24px">Truyện {{ storyGenre.storyGenreName }}</span>

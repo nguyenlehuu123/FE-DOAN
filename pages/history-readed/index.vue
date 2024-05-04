@@ -61,7 +61,7 @@ watch(page, () => {
       >
       </nguyen-category>
     </div>
-    <div class="text-center">
+    <div v-if="readHistoryStoryResponse?.readHistoryStoryDTOs" class="text-center">
       <v-pagination
         v-model="page"
         :length="totalPaging"

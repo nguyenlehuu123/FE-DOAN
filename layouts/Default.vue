@@ -6,7 +6,7 @@
     <nguyen-dialog-http></nguyen-dialog-http>
     <nguyen-dialog-confirm></nguyen-dialog-confirm>
     <v-main>
-      <div style="max-width: 1500px; margin: auto; margin-top: -60px;">
+      <div style="max-width: 1500px; margin: auto; margin-top: 60px;">
         <nuxt-page></nuxt-page>
       </div>
     </v-main>
