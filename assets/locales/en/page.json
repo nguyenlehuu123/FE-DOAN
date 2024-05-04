@@ -69,7 +69,10 @@
     "dayAgo": "day ago",
     "monthAgo": "month ago",
     "yearAgo": "year ago",
-    "collapse": "collapse"
+    "collapse": "collapse",
+    "readStory": "Read Story",
+    "read": "Read",
+    "category": "Category"
   },
   "uploadStory": {
     "addStory": "Add story",

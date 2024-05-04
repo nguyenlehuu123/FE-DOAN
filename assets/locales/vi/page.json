@@ -69,7 +69,10 @@
     "dayAgo": "ngày trước",
     "monthAgo": "tháng trước",
     "yearAgo": "năm trước",
-    "collapse": "Thu gọn"
+    "collapse": "Thu gọn",
+    "readStory": "Đọc truyện",
+    "read": "Đọc",
+    "category": "Thể loại"
   },
   "uploadStory": {
     "addStory": "Thêm truyện",

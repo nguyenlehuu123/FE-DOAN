@@ -27,5 +27,8 @@ export default {
   },
   isRatingManga(params = {}, langCodes = {}) {
     return http.GET(`${resource}/is-rated/${params}`, {}, false, false, langCodes);
+  },
+  getStoryGenreName(params = {}, langCodes = {}) {
+    return http.GET(`${resource}/story-genre-name/${params}`, {}, false, false, langCodes);
   }
 }

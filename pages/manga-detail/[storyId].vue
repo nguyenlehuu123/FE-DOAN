@@ -119,7 +119,7 @@ const headersFixed = [
     title: i18n.t('page.mangaDetail.view'),
     align: 'center',
     sortable: true,
-    width: '20%',
+    width: '15%',
     fixed: true
   },
   {
@@ -127,7 +127,7 @@ const headersFixed = [
     title: i18n.t('page.mangaDetail.releaseDate'),
     align: 'center',
     sortable: true,
-    width: '25%',
+    width: '20%',
     fixed: true
   },
   {
@@ -135,7 +135,15 @@ const headersFixed = [
     title: i18n.t('page.mangaDetail.dateSubmitted'),
     align: 'center',
     sortable: true,
-    width: '25%',
+    width: '20%',
+    fixed: true
+  },
+  {
+    key: 'readStory',
+    title: i18n.t('page.mangaDetail.readStory'),
+    align: 'center',
+    sortable: false,
+    width: '10%',
     fixed: true
   },
 ]
@@ -154,28 +162,19 @@ const dialogHttpStoreLocal = dialogHttpStore()
 const getCommentResponses = reactive<IGetCommentResponse[]>([])
 const showCommentChildren: Record<number, boolean> = reactive({})
 const overviewRating = ref<IRatingOverviewResponse | null>(null)
-
-const breadcrumbs = [
-  {
-    title: 'Trang chủ',
-    disabled: false,
-    href: '/home',
-  },
-  {
-    title: detailManga.value?.storyName,
-    disabled: false,
-  }
-]
+const storyGenreName = ref<string>('')
 
 onMounted(() => {
   Promise.all([
     mangaDetailRepository.getMangaDetail(storyId),
     mangaDetailRepository.getAllCommentMana(storyId),
+    mangaDetailRepository.getStoryGenreName(storyId)
   ])
     .then((response) => {
       detailManga.value = response[0] as IStory
       chapterData.value = detailManga.value.chapterEntities as IChapterData[]
       getCommentResponses.push(...response[1] as IGetCommentResponse[])
+      storyGenreName.value = response[2] as string
     })
     .catch((error) => {
       // TODO
@@ -348,12 +347,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="mx-auto w-66">
-    <v-breadcrumbs :items="breadcrumbs" class="mt-n12" style="font-size: 14px; font-weight: 600">
-      <template #divider>
-        <v-icon icon="mdi-chevron-right"></v-icon>
-      </template>
-    </v-breadcrumbs>
+  <div class="mx-auto w-66 mt-8">
     <div class="d-flex">
       <div>
         <v-img
@@ -392,9 +386,9 @@ onBeforeUnmount(() => {
           <p>{{ detailManga && detailManga.followNumber }}</p>
         </div>
         <div class="d-flex align-center mt-3">
-          <v-icon icon="mdi-eye-arrow-left" style="font-size: 20px; margin-right: 4px"></v-icon>
-          <p style="width: 140px">{{ $t('page.mangaDetail.view') }}</p>
-          <p>34539354</p>
+          <v-icon icon="mdi-book-multiple" style="font-size: 20px; margin-right: 4px"></v-icon>
+          <p style="width: 140px">{{ $t('page.mangaDetail.category') }}</p>
+          <p>{{ storyGenreName }}</p>
         </div>
         <div class="d-flex ga-6 mt-10">
           <v-btn
@@ -474,6 +468,11 @@ onBeforeUnmount(() => {
           <div>
             <v-icon v-if="item?.statusKey === 1" icon="mdi-lock-alert-outline"></v-icon>
             <v-icon v-else icon="mdi-lock-open-outline"></v-icon>
+          </div>
+        </template>
+        <template #item.readStory="{ item }">
+          <div>
+            <span :style="`color: ${item?.statusKey === 2 ? '#40C4FF' : ''}`">{{ $t('page.mangaDetail.read') }}</span>
           </div>
         </template>
       </nguyen-data-table>
