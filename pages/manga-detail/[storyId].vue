@@ -231,7 +231,7 @@ function handleFollowStory() {
     followRepository.followStory({ storyId: storyId as string }, {})
       .then((response) => {
         isFollow.value = true
-        // TODO
+        detailManga.value?.followNumber && detailManga.value.followNumber++
       })
       .catch((error) => {
         // TODO
@@ -246,6 +246,7 @@ function handleUnfollowStory() {
   followRepository.unfollowStory({ storyId: storyId as string }, {})
     .then(response => {
       isFollow.value = false
+      detailManga.value?.followNumber && detailManga.value.followNumber--
     })
     .catch(error => {
     })
