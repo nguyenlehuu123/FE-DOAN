@@ -29,6 +29,7 @@ interface ISearchStory {
   storyName: string;
   imageStory: string;
   nameAuthor: string;
+  displayText?: string;
 }
 
 const searchAllStory = ref<ISearchStory[] | null>(null)
@@ -106,7 +107,14 @@ const handleInfoMenu = (index: number) => {
 }
 
 const handleChangeTextSearch = (event: string): void => {
-  items.value = matchSorter(searchAllStory.value as ISearchStory[], event, { keys: ['storyName', 'nameAuthor'] }).slice(0, 10)
+  const results = matchSorter(searchAllStory.value as ISearchStory[], event.toLowerCase(), {
+    keys: [(item) => item.nameAuthor.toLowerCase(), (item) => item.storyName.toLowerCase()]
+  }).slice(0, 10)
+
+  items.value = results.map(item => ({
+    ...item,
+    displayText: `${item.storyName} (${item.nameAuthor})`
+  }))
 }
 
 onMounted(() => {
@@ -158,7 +166,7 @@ const handleToggleLanguage = (i: number) => {
       rounded
       theme="light"
       variant="solo"
-      item-title="storyName"
+      item-title="displayText"
       :focused="true"
       :hide-no-data="true"
       style="width: 300px; margin-top: 20px; margin-left: 50px;"
@@ -166,7 +174,7 @@ const handleToggleLanguage = (i: number) => {
       @update:search="handleChangeTextSearch"
     >
       <template v-slot:item="{ props, item }">
-        <v-card style="display: flex; cursor: pointer" @click="() => navigateTo(`manga-detail/${item.raw.storyId}`)">
+        <v-card style="display: flex; cursor: pointer" @click="() => navigateTo(`/manga-detail/${item.raw.storyId}`)">
           <v-img
             :src="item.raw.imageStory"
             max-height="120"
