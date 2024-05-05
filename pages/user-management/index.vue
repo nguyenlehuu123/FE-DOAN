@@ -109,7 +109,7 @@ const drafting = computed(
 
 const pagingRequest = {
   pageNum: page.value,
-  pageSize: 2,
+  pageSize: 20,
 }
 
 onMounted(() => {
@@ -190,10 +190,15 @@ const handleUpdateRole = (userId: number, value: number) => {
 </script>
 
 <template>
-  <div style="margin-top: 200px">
+  <div style="margin-top: 100px">
+    <div style="display: flex; align-items: center; gap: 20px; color: #4FC3F7; margin-bottom: 50px">
+      <v-icon icon="mdi-flag-variant"></v-icon>
+      <span style="font-size: 24px">Quản lý user</span>
+    </div>
     <nguyen-data-table
       :headers="headersFixed"
-      :height="400"
+      :height="800"
+      :max-height="600"
       :items="userManagementDTOS ?? []"
     >
       <template #item.edit="{ item }">
