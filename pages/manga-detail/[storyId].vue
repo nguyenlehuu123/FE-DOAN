@@ -331,6 +331,9 @@ const fetchMessage = () => {
     } else {
       for (let i = 0; i < getCommentResponses.length; i++) {
         if (getCommentResponses[i].commentId === messageResponse.subCommentId) {
+          if (getCommentResponses[i].commentResponses === undefined) {
+            getCommentResponses[i].commentResponses = []
+          }
           getCommentResponses[i].commentResponses.push(messageResponse)
         }
       }

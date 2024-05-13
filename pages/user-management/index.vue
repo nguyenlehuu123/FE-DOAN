@@ -73,7 +73,7 @@ const EDIT_MODE = 1
 const SAVE_MODE = 2
 const DELETE_MODE = 3
 
-const itemsStatus = ['USER', 'ADMIN']
+const itemsStatus = ['USER', 'ADMIN', "AUTHOR"]
 
 interface IUserManagementDTO {
   no?: number,
@@ -146,6 +146,10 @@ const handleEditRoleUser = (userId: number) => {
 
 const handleSaveRoleUser = (userId: number) => {
   const selectedRole = itemsStatus[statusRoleMenu.value[userId] - 1]
+  if (selectedRole == 'AUTHOR') {
+    handleUpdateRoleAuthor(userId, statusRoleMenu.value[userId])
+    return
+  }
   userManagementRepository.updateRoleUser(userId, { role: selectedRole })
     .then(response => {
       // handle response here
@@ -185,6 +189,21 @@ const handleClickDeleteUser = (userId: number) => {
 
 const handleUpdateRole = (userId: number, value: number) => {
   statusRoleMenu.value[userId] = value
+}
+
+const handleUpdateRoleAuthor = (userId: number, value: number) => {
+  const selectedUser = userManagementDTOS.value?.find(user => user.userId === userId)
+  const userEmail = selectedUser ? selectedUser.email : null
+  if (itemsStatus[value - 1] === 'AUTHOR') {
+    dialogConfirm.setConfirmResolve(() => {
+      navigateTo({
+        name: 'author-info',
+        query: { email: userEmail }
+      })
+    })
+    dialogConfirm.setContentMessage(i18n.t('message.000018'))
+    dialogConfirm.setShow(true)
+  }
 }
 
 </script>

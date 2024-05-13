@@ -15,5 +15,7 @@
   "000013": "Are you sure you want to cancel what you're importing?",
   "000014": "{0} success",
   "000015": "You definitely want to delete this story?",
-  "000016": "You want to delete this user?"
+  "000016": "You want to delete this user?",
+  "000017": "Author information updated successfully",
+  "000018": "You definitely want to change the user to the author?"
 }

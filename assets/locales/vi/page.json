@@ -17,7 +17,8 @@
       "setting": "Cài đặt",
       "logout": "Đăng xuất",
       "uploadStory": "Đăng truyện",
-      "userManagement": "Quản lý người dùng"
+      "userManagement": "Quản lý người dùng",
+      "addAuthor": "Thêm tác giả"
     }
   },
   "login": {
@@ -109,5 +110,8 @@
       "apply": "Áp dụng",
       "cancel": "Hủy"
     }
+  },
+  "userManagement": {
+    "authorInformation": "Nhập thông tin tác giả"
   }
 }

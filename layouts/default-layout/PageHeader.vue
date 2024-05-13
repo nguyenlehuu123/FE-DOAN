@@ -74,6 +74,10 @@ const handleUserManagement = () => {
   navigateTo('/user-management')
 }
 
+const handleAuthor = () => {
+  navigateTo('/author-info')
+}
+
 const computedMenuInfo = computed(() => {
   let baseMenu = [
     {
@@ -95,6 +99,17 @@ const computedMenuInfo = computed(() => {
       prependIcon: 'mdi-account-multiple-outline',
       title: 'page.home.info.userManagement',
       handle: handleUserManagement
+    }, {
+      prependIcon: 'mdi-information-variant-box-outline',
+      title: 'page.home.info.addAuthor',
+      handle: handleAuthor
+    })
+  }
+  if (userStoreLocal.useRole == "AUTHOR") {
+    baseMenu.unshift({
+      prependIcon: 'mdi-file-upload',
+      title: 'page.home.info.uploadStory',
+      handle: handleUploadStory
     })
   }
   return baseMenu.map(item => {

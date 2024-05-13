@@ -17,7 +17,8 @@
       "setting": "Setting",
       "uploadStory": "Upload story",
       "logout": "Logout",
-      "userManagement": "User management"
+      "userManagement": "User management",
+      "addAuthor": "Add author"
     }
   },
   "login": {
@@ -109,5 +110,8 @@
       "apply": "Apply",
       "cancel": "Cancel"
     }
+  },
+  "userManagement": {
+    "authorInformation": "Enter Author information"
   }
 }

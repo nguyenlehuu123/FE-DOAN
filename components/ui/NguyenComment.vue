@@ -62,6 +62,7 @@ onMounted(() => {
 
 const handleFeedBack = (e: Event) => {
   showInputFeedBack.value = true
+  textFeedBack.value = ''
 }
 
 const handleShowCommentChildren = () => {
@@ -84,7 +85,7 @@ const handleShowCommentChildren = () => {
     <template #title>
       <div class="d-flex align-center">
         <h5>{{ props.accountName }}</h5>
-        <span class="text-body-2 ml-2">{{ DateHelper.dateAgo(parseInt(props.dayAgo)) }}</span>
+        <!--        <span class="text-body-2 ml-2">{{ DateHelper.dateAgo(parseInt(props.dayAgo)) }}</span>-->
       </div>
     </template>
     <div
@@ -144,7 +145,6 @@ const handleShowCommentChildren = () => {
         :parent-comment-id="props.parentCommentId"
         v-model="textFeedBack"
         density="compact"
-        alt="Linh Nhi"
         @show-input-comment="(showInput) => showInputFeedBack = showInput"
       ></nguyen-text-field-comment>
     </div>
